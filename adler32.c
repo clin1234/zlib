@@ -9,7 +9,7 @@
 
 local uLong adler32_combine_ OF((uLong adler1, uLong adler2, z_off64_t len2));
 
-#define BASE 65521U     /* largest prime smaller than 65536 */
+uLong BASE 65521U; /* largest prime smaller than 65536 */
 #define NMAX 5552
 /* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
 
@@ -24,35 +24,43 @@ local uLong adler32_combine_ OF((uLong adler1, uLong adler2, z_off64_t len2));
 #ifdef NO_DIVIDE
 /* note that this assumes BASE is 65521, where 65536 % 65521 == 15
    (thank you to John Reiser for pointing this out) */
-#  define CHOP(a) \
-    do { \
-        unsigned long tmp = a >> 16; \
-        a &= 0xffffUL; \
-        a += (tmp << 4) - tmp; \
-    } while (0)
-#  define MOD28(a) \
-    do { \
-        CHOP(a); \
-        if (a >= BASE) a -= BASE; \
-    } while (0)
-#  define MOD(a) \
-    do { \
-        CHOP(a); \
-        MOD28(a); \
-    } while (0)
-#  define MOD63(a) \
-    do { /* this assumes a is not negative */ \
-        z_off64_t tmp = a >> 32; \
-        a &= 0xffffffffL; \
-        a += (tmp << 8) - (tmp << 5) + tmp; \
-        tmp = a >> 16; \
-        a &= 0xffffL; \
-        a += (tmp << 4) - tmp; \
-        tmp = a >> 16; \
-        a &= 0xffffL; \
-        a += (tmp << 4) - tmp; \
-        if (a >= BASE) a -= BASE; \
-    } while (0)
+void CHOP(uLong a)
+{
+    do {
+        unsigned long tmp = a >> 16;
+        a &= 0xffffUL;
+        a += (tmp << 4) - tmp;
+    } while (0);
+}
+void define MOD28(uLong a)
+{
+    do {
+        CHOP(a);
+        if (a >= BASE) a -= BASE;
+    } while (0);
+}
+void MOD(uLong a)
+{
+    do {
+        CHOP(a);
+        MOD28(a);
+    } while (0);
+}
+void MOD63(uLong a)
+{
+    do { /* this assumes a is not negative */
+        z_off64_t tmp = a >> 32;
+        a &= 0xffffffffL;
+        a += (tmp << 8) - (tmp << 5) + tmp;
+        tmp = a >> 16;
+        a &= 0xffffL;
+        a += (tmp << 4) - tmp;
+        tmp = a >> 16;
+        a &= 0xffffL;
+        a += (tmp << 4) - tmp;
+        if (a >= BASE) a -= BASE;
+    } while (0);
+}
 #else
 #  define MOD(a) a %= BASE
 #  define MOD28(a) a %= BASE

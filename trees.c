@@ -116,7 +116,7 @@ local int base_dist[D_CODES];
 
 struct static_tree_desc_s {
     const ct_data *static_tree;  /* static tree or NULL */
-    const intf *extra_bits;      /* extra bits for each code or NULL */
+    const int *extra_bits;      /* extra bits for each code or NULL */
     int     extra_base;          /* base index for extra_bits */
     int     elems;               /* max number of elements in the tree */
     int     max_length;          /* max bit length for the codes */
@@ -490,7 +490,7 @@ local void gen_bitlen(s, desc)
     ct_data *tree        = desc->dyn_tree;
     int max_code         = desc->max_code;
     const ct_data *stree = desc->stat_desc->static_tree;
-    const intf *extra    = desc->stat_desc->extra_bits;
+    const int *extra    = desc->stat_desc->extra_bits;
     int base             = desc->stat_desc->extra_base;
     int max_length       = desc->stat_desc->max_length;
     int h;              /* heap index */
@@ -862,7 +862,7 @@ local void send_all_trees(s, lcodes, dcodes, blcodes)
  */
 void ZLIB_INTERNAL _tr_stored_block(s, buf, stored_len, last)
     deflate_state *s;
-    charf *buf;       /* input block */
+    char *buf;       /* input block */
     ulg stored_len;   /* length of input block */
     int last;         /* one if this is the last block for a file */
 {
@@ -911,7 +911,7 @@ void ZLIB_INTERNAL _tr_align(s)
  */
 void ZLIB_INTERNAL _tr_flush_block(s, buf, stored_len, last)
     deflate_state *s;
-    charf *buf;       /* input block, or NULL if too old */
+    char *buf;       /* input block, or NULL if too old */
     ulg stored_len;   /* length of input block */
     int last;         /* one if this is the last block for a file */
 {
