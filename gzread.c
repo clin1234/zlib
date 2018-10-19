@@ -372,7 +372,7 @@ local z_size_t gz_read(state, buf, len)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzread(file, buf, len)
+int gzread(file, buf, len)
     gzFile file;
     voidp buf;
     unsigned len;
@@ -408,7 +408,7 @@ int ZEXPORT gzread(file, buf, len)
 }
 
 /* -- see zlib.h -- */
-z_size_t ZEXPORT gzfread(buf, size, nitems, file)
+z_size_t gzfread(buf, size, nitems, file)
     voidp buf;
     z_size_t size;
     z_size_t nitems;
@@ -444,7 +444,7 @@ z_size_t ZEXPORT gzfread(buf, size, nitems, file)
 #else
 #  undef gzgetc
 #endif
-int ZEXPORT gzgetc(file)
+int gzgetc(file)
     gzFile file;
 {
     unsigned char buf[1];
@@ -471,14 +471,14 @@ int ZEXPORT gzgetc(file)
     return gz_read(state, buf, 1) < 1 ? -1 : buf[0];
 }
 
-int ZEXPORT gzgetc_(file)
+int gzgetc_(file)
 gzFile file;
 {
     return gzgetc(file);
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzungetc(c, file)
+int gzungetc(c, file)
     int c;
     gzFile file;
 {
@@ -538,7 +538,7 @@ int ZEXPORT gzungetc(c, file)
 }
 
 /* -- see zlib.h -- */
-char * ZEXPORT gzgets(file, buf, len)
+char * gzgets(file, buf, len)
     gzFile file;
     char *buf;
     int len;
@@ -602,7 +602,7 @@ char * ZEXPORT gzgets(file, buf, len)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzdirect(file)
+int gzdirect(file)
     gzFile file;
 {
     gz_statep state;
@@ -622,7 +622,7 @@ int ZEXPORT gzdirect(file)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzclose_r(file)
+int gzclose_r(file)
     gzFile file;
 {
     int ret, err;

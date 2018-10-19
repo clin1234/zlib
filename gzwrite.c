@@ -225,7 +225,7 @@ local z_size_t gz_write(state, buf, len)
             return 0;
 
         /* directly compress user buffer to file */
-        state->strm.next_in = (z_const Bytef *)buf;
+        state->strm.next_in = (const Bytef *)buf;
         do {
             unsigned n = (unsigned)-1;
             if (n > len)
@@ -243,7 +243,7 @@ local z_size_t gz_write(state, buf, len)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzwrite(file, buf, len)
+int gzwrite(file, buf, len)
     gzFile file;
     voidpc buf;
     unsigned len;
@@ -271,7 +271,7 @@ int ZEXPORT gzwrite(file, buf, len)
 }
 
 /* -- see zlib.h -- */
-z_size_t ZEXPORT gzfwrite(buf, size, nitems, file)
+z_size_t gzfwrite(buf, size, nitems, file)
     voidpc buf;
     z_size_t size;
     z_size_t nitems;
@@ -301,7 +301,7 @@ z_size_t ZEXPORT gzfwrite(buf, size, nitems, file)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzputc(file, c)
+int gzputc(file, c)
     gzFile file;
     int c;
 {
@@ -349,7 +349,7 @@ int ZEXPORT gzputc(file, c)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzputs(file, s)
+int gzputs(file, s)
     gzFile file;
     const char *s;
 {
@@ -553,7 +553,7 @@ int ZEXPORTVA gzprintf (file, format, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10,
 #endif
 
 /* -- see zlib.h -- */
-int ZEXPORT gzflush(file, flush)
+int gzflush(file, flush)
     gzFile file;
     int flush;
 {
@@ -585,7 +585,7 @@ int ZEXPORT gzflush(file, flush)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzsetparams(file, level, strategy)
+int gzsetparams(file, level, strategy)
     gzFile file;
     int level;
     int strategy;
@@ -627,7 +627,7 @@ int ZEXPORT gzsetparams(file, level, strategy)
 }
 
 /* -- see zlib.h -- */
-int ZEXPORT gzclose_w(file)
+int gzclose_w(file)
     gzFile file;
 {
     int ret = Z_OK;

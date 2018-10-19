@@ -172,7 +172,7 @@ typedef struct {
     int size;                   /* 1 << size is bytes in buf */
     unsigned left;              /* bytes available at next */
     unsigned char *buf;         /* buffer */
-    z_const unsigned char *next;    /* next byte in buffer */
+    const unsigned char *next;    /* next byte in buffer */
     char *name;                 /* file name for error messages */
 } file;
 

@@ -46,7 +46,7 @@ int ZEXPORT uncompress2 (dest, destLen, source, sourceLen)
         dest = buf;
     }
 
-    stream.next_in = (z_const Bytef *)source;
+    stream.next_in = (const Bytef *)source;
     stream.avail_in = 0;
     stream.zalloc = (alloc_func)0;
     stream.zfree = (free_func)0;
