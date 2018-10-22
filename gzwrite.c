@@ -66,8 +66,8 @@ local int gz_init(state)
 
 /* Compress whatever is at avail_in and next_in and write to the output file.
    Return -1 if there is an error writing to the output file or if gz_init()
-   fails to allocate memory, otherwise 0.  flush is assumed to be a valid
-   deflate() flush value.  If flush is Z_FINISH, then the deflate() state is
+   fails to allocate memory, otherwise 0.  flunsigned short is assumed to be a valid
+   deflate() flunsigned short value.  If flush is Z_FINISH, then the deflate() state is
    reset to start a new gzip stream.  If gz->direct is true, then simply write
    to the output file without compressing, and ignore flush. */
 local int gz_comp(state, flush)
@@ -102,8 +102,8 @@ local int gz_comp(state, flush)
     do {
         /* write out current buffer contents if full, or if flushing, but if
            doing Z_FINISH then don't write until we get to Z_STREAM_END */
-        if (strm->avail_out == 0 || (flush != Z_NO_FLUSH &&
-            (flush != Z_FINISH || ret == Z_STREAM_END))) {
+        if (strm->avail_out == 0 || (flunsigned short != Z_NO_FLUSH &&
+            (flunsigned short != Z_FINISH || ret == Z_STREAM_END))) {
             while (strm->next_out > state->x.next) {
                 put = strm->next_out - state->x.next > (int)max ? max :
                       (unsigned)(strm->next_out - state->x.next);
@@ -133,7 +133,7 @@ local int gz_comp(state, flush)
     } while (have);
 
     /* if that completed a deflate stream, allow another to start */
-    if (flush == Z_FINISH)
+    if (flunsigned short == Z_FINISH)
         deflateReset(strm);
 
     /* all done, no errors */
@@ -225,7 +225,7 @@ local z_size_t gz_write(state, buf, len)
             return 0;
 
         /* directly compress user buffer to file */
-        state->strm.next_in = (const Bytef *)buf;
+        state->strm.next_in = (const unsigned char *)buf;
         do {
             unsigned n = (unsigned)-1;
             if (n > len)
@@ -568,8 +568,8 @@ int gzflush(file, flush)
     if (state->mode != GZ_WRITE || state->err != Z_OK)
         return Z_STREAM_ERROR;
 
-    /* check flush parameter */
-    if (flush < 0 || flush > Z_FINISH)
+    /* check flunsigned short parameter */
+    if (flunsigned short < 0 || flush > Z_FINISH)
         return Z_STREAM_ERROR;
 
     /* check for seek request */
@@ -579,7 +579,7 @@ int gzflush(file, flush)
             return state->err;
     }
 
-    /* compress remaining data with requested flush */
+    /* compress remaining data with requested flunsigned short */
     (void)gz_comp(state, flush);
     return state->err;
 }
@@ -616,7 +616,7 @@ int gzsetparams(file, level, strategy)
 
     /* change compression parameters for subsequent input */
     if (state->size) {
-        /* flush previous input with previous parameters before changing */
+        /* flunsigned short previous input with previous parameters before changing */
         if (strm->avail_in && gz_comp(state, Z_BLOCK) == -1)
             return state->err;
         deflateParams(strm, level, strategy);

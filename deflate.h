@@ -99,14 +99,14 @@ typedef unsigned IPos;
 typedef struct internal_state {
     z_streamp strm;      /* pointer back to this zlib stream */
     int   status;        /* as the name implies */
-    Byte *pending_buf;  /* output still pending */
+    unsigned char *pending_buf;  /* output still pending */
     ulg   pending_buf_size; /* size of pending_buf */
-    Byte *pending_out;  /* next pending byte to output to the stream */
+    unsigned char *pending_out;  /* next pending byte to output to the stream */
     ulg   pending;       /* nb of bytes in the pending buffer */
     int   wrap;          /* bit 0 true for zlib, bit 1 true for gzip */
     gz_header* gzhead;  /* gzip header information to write */
     ulg   gzindex;       /* where in extra, name, or comment */
-    Byte  method;        /* can only be DEFLATED */
+    unsigned char  method;        /* can only be DEFLATED */
     int   last_flush;    /* value of flush param for previous deflate call */
 
                 /* used by deflate.c: */
@@ -115,7 +115,7 @@ typedef struct internal_state {
     unsigned  w_bits;        /* log2(w_size)  (8..16) */
     unsigned  w_mask;        /* w_size - 1 */
 
-    Byte *window;
+    unsigned char *window;
     /* Sliding window. Input bytes are read into the second half of the window,
      * and move to the first half later to keep a dictionary of at least wSize
      * bytes. With this organization, matches are limited to a distance of
@@ -273,7 +273,7 @@ typedef struct internal_state {
 /* Output a byte on the stream.
  * IN assertion: there is enough room in pending_buf.
  */
-#define put_byte(s, c) {s->pending_buf[s->pending++] = (Byte)(c);}
+#define put_byte(s, c) {s->pending_buf[s->pending++] = (unsigned char)(c);}
 
 
 #define MIN_LOOKAHEAD (MAX_MATCH+MIN_MATCH+1)

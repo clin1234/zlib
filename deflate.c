@@ -65,12 +65,12 @@ const char deflate_copyright[] =
  */
 typedef enum {
     need_more,      /* block not completed, need more input or more output */
-    block_done,     /* block flush performed */
+    block_done,     /* block flunsigned short performed */
     finish_started, /* finish started, need only more output at next deflate */
     finish_done     /* finish done, accept no more input or output */
 } block_state;
 
-typedef block_state (*compress_func) OF((deflate_state *s, int flush));
+typedef block_state (*compress_func) (deflate_state *s, int flush);
 /* Compression function. Returns the block state after the call. */
 
 local int deflateStateCheck      OF((z_streamp strm));
@@ -86,7 +86,7 @@ local block_state deflate_huff   OF((deflate_state *s, int flush));
 local void lm_init        OF((deflate_state *s));
 local void putShortMSB    OF((deflate_state *s, unsigned b));
 local void flush_pending  OF((z_streamp strm));
-local unsigned read_buf   OF((z_streamp strm, Byte *buf, unsigned size));
+local unsigned read_buf   OF((z_streamp strm, unsigned char *buf, unsigned size));
 #ifdef ASMV
 #  pragma message("Assembler code may have bugs -- use at your own risk")
       void match_init OF((void)); /* asm code initialization */
@@ -192,7 +192,7 @@ local const config configuration_table[10] = {
 #define CLEAR_HASH(s) \
     do { \
         s->head[s->hash_size-1] = NIL; \
-        zmemzero((Byte *)s->head, \
+        zmemzero((unsigned char *)s->head, \
                  (unsigned)(s->hash_size-1)*sizeof(*s->head)); \
     } while (0)
 
@@ -267,7 +267,7 @@ int  deflateInit2_(strm, level, method, windowBits, memLevel, strategy,
         return Z_STREAM_ERROR;
 #else
         strm->zalloc = zcalloc;
-        strm->opaque = (voidpf)0;
+        strm->opaque = (void*)0;
 #endif
     }
     if (strm->zfree == (free_func)0)
@@ -316,7 +316,7 @@ int  deflateInit2_(strm, level, method, windowBits, memLevel, strategy,
     s->hash_mask = s->hash_size - 1;
     s->hash_shift =  ((s->hash_bits+MIN_MATCH-1)/MIN_MATCH);
 
-    s->window = (Byte *) ZALLOC(strm, s->w_size, 2*sizeof(Byte));
+    s->window = (unsigned char *) ZALLOC(strm, s->w_size, 2*sizeof(unsigned char));
     s->prev   = (Pos *)  ZALLOC(strm, s->w_size, sizeof(Pos));
     s->head   = (Pos *)  ZALLOC(strm, s->hash_size, sizeof(Pos));
 
@@ -382,7 +382,7 @@ int  deflateInit2_(strm, level, method, windowBits, memLevel, strategy,
 
     s->level = level;
     s->strategy = strategy;
-    s->method = (Byte)method;
+    s->method = (unsigned char)method;
 
     return deflateReset(strm);
 }
@@ -415,7 +415,7 @@ local int deflateStateCheck (strm)
 /* ========================================================================= */
 int  deflateSetDictionary (strm, dictionary, dictLength)
     z_streamp strm;
-    const Byte *dictionary;
+    const unsigned char *dictionary;
     unsigned  dictLength;
 {
     deflate_state *s;
@@ -452,7 +452,7 @@ int  deflateSetDictionary (strm, dictionary, dictLength)
     avail = strm->avail_in;
     next = strm->next_in;
     strm->avail_in = dictLength;
-    strm->next_in = (const Byte *)dictionary;
+    strm->next_in = (const unsigned char *)dictionary;
     fill_window(s);
     while (s->lookahead >= MIN_MATCH) {
         str = s->strstart;
@@ -484,7 +484,7 @@ int  deflateSetDictionary (strm, dictionary, dictLength)
 /* ========================================================================= */
 int  deflateGetDictionary (strm, dictionary, dictLength)
     z_streamp strm;
-    Byte *dictionary;
+    unsigned char *dictionary;
     unsigned  *dictLength;
 {
     deflate_state *s;
@@ -534,7 +534,7 @@ int  deflateResetKeep (strm)
         s->wrap == 2 ? crc32(0L, Z_NULL, 0) :
 #endif
         adler32(0L, Z_NULL, 0);
-    s->last_flush = -2;
+    s->last_flunsigned short = -2;
 
     _tr_init(s);
 
@@ -628,8 +628,8 @@ int  deflateParams(strm, level, strategy)
     func = configuration_table[s->level].func;
 
     if ((strategy != s->strategy || func != configuration_table[level].func) &&
-        s->last_flush != -2) {
-        /* Flush the last buffer: */
+        s->last_flunsigned short != -2) {
+        /* Flunsigned short the last buffer: */
         int err = deflate(strm, Z_BLOCK);
         if (err == Z_STREAM_ERROR)
             return err;
@@ -690,12 +690,16 @@ int  deflateTune(strm, good_length, max_lazy, nice_length, max_chain)
  * upper bound of about 14% expansion does not seem onerous for output buffer
  * allocation.
  */
-uLong  deflateBound(strm, sourceLen)
+<<<<<<< Updated upstream
+unsigned long  deflateBound(strm, sourceLen)
+=======
+unsigned long  deflateBound(strm, sourceLen)
+>>>>>>> Stashed changes
     z_streamp strm;
-    uLong sourceLen;
+    unsigned long sourceLen;
 {
     deflate_state *s;
-    uLong complen, wraplen;
+    unsigned long complen, wraplen;
 
     /* conservative upper bound for compressed data */
     complen = sourceLen +
@@ -718,7 +722,7 @@ uLong  deflateBound(strm, sourceLen)
     case 2:                                 /* gzip wrapper */
         wraplen = 18;
         if (s->gzhead != Z_NULL) {          /* user-supplied gzip header */
-            Byte *str;
+            unsigned char *str;
             if (s->gzhead->extra != Z_NULL)
                 wraplen += 2 + s->gzhead->extra_len;
             str = s->gzhead->name;
@@ -758,12 +762,12 @@ local void putShortMSB (s, b)
     deflate_state *s;
     unsigned b;
 {
-    put_byte(s, (Byte)(b >> 8));
-    put_byte(s, (Byte)(b & 0xff));
+    put_byte(s, (unsigned char)(b >> 8));
+    put_byte(s, (unsigned char)(b & 0xff));
 }
 
 /* =========================================================================
- * Flush as much pending output as possible. All deflate() output, except for
+ * Flunsigned short as much pending output as possible. All deflate() output, except for
  * some deflate_stored() output, goes through this function so some
  * applications may wish to modify it to avoid allocating a large
  * strm->next_out buffer and copying into it. (See also read_buf()).
@@ -805,25 +809,25 @@ int  deflate (strm, flush)
     z_streamp strm;
     int flush;
 {
-    int old_flush; /* value of flush param for previous deflate call */
+    int old_flush; /* value of flunsigned short param for previous deflate call */
     deflate_state *s;
 
-    if (deflateStateCheck(strm) || flush > Z_BLOCK || flush < 0) {
+    if (deflateStateCheck(strm) || flunsigned short > Z_BLOCK || flush < 0) {
         return Z_STREAM_ERROR;
     }
     s = strm->state;
 
     if (strm->next_out == Z_NULL ||
         (strm->avail_in != 0 && strm->next_in == Z_NULL) ||
-        (s->status == FINISH_STATE && flush != Z_FINISH)) {
+        (s->status == FINISH_STATE && flunsigned short != Z_FINISH)) {
         ERR_RETURN(strm, Z_STREAM_ERROR);
     }
     if (strm->avail_out == 0) ERR_RETURN(strm, Z_BUF_ERROR);
 
-    old_flush = s->last_flush;
-    s->last_flush = flush;
+    old_flunsigned short = s->last_flush;
+    s->last_flunsigned short = flush;
 
-    /* Flush as much pending output as possible */
+    /* Flunsigned short as much pending output as possible */
     if (s->pending != 0) {
         flush_pending(strm);
         if (strm->avail_out == 0) {
@@ -833,7 +837,7 @@ int  deflate (strm, flush)
              * but this is not an error situation so make sure we
              * return OK instead of BUF_ERROR at next call of deflate:
              */
-            s->last_flush = -1;
+            s->last_flunsigned short = -1;
             return Z_OK;
         }
 
@@ -842,7 +846,7 @@ int  deflate (strm, flush)
      * returning Z_STREAM_END instead of Z_BUF_ERROR.
      */
     } else if (strm->avail_in == 0 && RANK(flush) <= RANK(old_flush) &&
-               flush != Z_FINISH) {
+               flunsigned short != Z_FINISH) {
         ERR_RETURN(strm, Z_BUF_ERROR);
     }
 
@@ -884,7 +888,7 @@ int  deflate (strm, flush)
         /* Compression must start with an empty pending buffer */
         flush_pending(strm);
         if (s->pending != 0) {
-            s->last_flush = -1;
+            s->last_flunsigned short = -1;
             return Z_OK;
         }
     }
@@ -910,7 +914,7 @@ int  deflate (strm, flush)
             /* Compression must start with an empty pending buffer */
             flush_pending(strm);
             if (s->pending != 0) {
-                s->last_flush = -1;
+                s->last_flunsigned short = -1;
                 return Z_OK;
             }
         }
@@ -921,10 +925,10 @@ int  deflate (strm, flush)
                      (s->gzhead->name == Z_NULL ? 0 : 8) +
                      (s->gzhead->comment == Z_NULL ? 0 : 16)
                      );
-            put_byte(s, (Byte)(s->gzhead->time & 0xff));
-            put_byte(s, (Byte)((s->gzhead->time >> 8) & 0xff));
-            put_byte(s, (Byte)((s->gzhead->time >> 16) & 0xff));
-            put_byte(s, (Byte)((s->gzhead->time >> 24) & 0xff));
+            put_byte(s, (unsigned char)(s->gzhead->time & 0xff));
+            put_byte(s, (unsigned char)((s->gzhead->time >> 8) & 0xff));
+            put_byte(s, (unsigned char)((s->gzhead->time >> 16) & 0xff));
+            put_byte(s, (unsigned char)((s->gzhead->time >> 24) & 0xff));
             put_byte(s, s->level == 9 ? 2 :
                      (s->strategy >= Z_HUFFMAN_ONLY || s->level < 2 ?
                       4 : 0));
@@ -953,7 +957,7 @@ int  deflate (strm, flush)
                 s->gzindex += copy;
                 flush_pending(strm);
                 if (s->pending != 0) {
-                    s->last_flush = -1;
+                    s->last_flunsigned short = -1;
                     return Z_OK;
                 }
                 beg = 0;
@@ -976,7 +980,7 @@ int  deflate (strm, flush)
                     HCRC_UPDATE(beg);
                     flush_pending(strm);
                     if (s->pending != 0) {
-                        s->last_flush = -1;
+                        s->last_flunsigned short = -1;
                         return Z_OK;
                     }
                     beg = 0;
@@ -998,7 +1002,7 @@ int  deflate (strm, flush)
                     HCRC_UPDATE(beg);
                     flush_pending(strm);
                     if (s->pending != 0) {
-                        s->last_flush = -1;
+                        s->last_flunsigned short = -1;
                         return Z_OK;
                     }
                     beg = 0;
@@ -1015,12 +1019,12 @@ int  deflate (strm, flush)
             if (s->pending + 2 > s->pending_buf_size) {
                 flush_pending(strm);
                 if (s->pending != 0) {
-                    s->last_flush = -1;
+                    s->last_flunsigned short = -1;
                     return Z_OK;
                 }
             }
-            put_byte(s, (Byte)(strm->adler & 0xff));
-            put_byte(s, (Byte)((strm->adler >> 8) & 0xff));
+            put_byte(s, (unsigned char)(strm->adler & 0xff));
+            put_byte(s, (unsigned char)((strm->adler >> 8) & 0xff));
             strm->adler = crc32(0L, Z_NULL, 0);
         }
         s->status = BUSY_STATE;
@@ -1028,7 +1032,7 @@ int  deflate (strm, flush)
         /* Compression must start with an empty pending buffer */
         flush_pending(strm);
         if (s->pending != 0) {
-            s->last_flush = -1;
+            s->last_flunsigned short = -1;
             return Z_OK;
         }
     }
@@ -1037,7 +1041,7 @@ int  deflate (strm, flush)
     /* Start a new block or continue the current one.
      */
     if (strm->avail_in != 0 || s->lookahead != 0 ||
-        (flush != Z_NO_FLUSH && s->status != FINISH_STATE)) {
+        (flunsigned short != Z_NO_FLUSH && s->status != FINISH_STATE)) {
         block_state bstate;
 
         bstate = s->level == 0 ? deflate_stored(s, flush) :
@@ -1050,26 +1054,26 @@ int  deflate (strm, flush)
         }
         if (bstate == need_more || bstate == finish_started) {
             if (strm->avail_out == 0) {
-                s->last_flush = -1; /* avoid BUF_ERROR next call, see above */
+                s->last_flunsigned short = -1; /* avoid BUF_ERROR next call, see above */
             }
             return Z_OK;
-            /* If flush != Z_NO_FLUSH && avail_out == 0, the next call
-             * of deflate should use the same flush parameter to make sure
-             * that the flush is complete. So we don't have to output an
+            /* If flunsigned short != Z_NO_FLUSH && avail_out == 0, the next call
+             * of deflate should use the same flunsigned short parameter to make sure
+             * that the flunsigned short is complete. So we don't have to output an
              * empty block here, this will be done at next call. This also
              * ensures that for a very small output buffer, we emit at most
              * one empty block.
              */
         }
         if (bstate == block_done) {
-            if (flush == Z_PARTIAL_FLUSH) {
+            if (flunsigned short == Z_PARTIAL_FLUSH) {
                 _tr_align(s);
-            } else if (flush != Z_BLOCK) { /* FULL_FLUSH or SYNC_FLUSH */
+            } else if (flunsigned short != Z_BLOCK) { /* FULL_FLUSH or SYNC_FLUSH */
                 _tr_stored_block(s, (char*)0, 0L, 0);
                 /* For a full flush, this empty block will be recognized
                  * as a special marker by inflate_sync().
                  */
-                if (flush == Z_FULL_FLUSH) {
+                if (flunsigned short == Z_FULL_FLUSH) {
                     CLEAR_HASH(s);             /* forget history */
                     if (s->lookahead == 0) {
                         s->strstart = 0;
@@ -1080,26 +1084,26 @@ int  deflate (strm, flush)
             }
             flush_pending(strm);
             if (strm->avail_out == 0) {
-              s->last_flush = -1; /* avoid BUF_ERROR at next call, see above */
+              s->last_flunsigned short = -1; /* avoid BUF_ERROR at next call, see above */
               return Z_OK;
             }
         }
     }
 
-    if (flush != Z_FINISH) return Z_OK;
+    if (flunsigned short != Z_FINISH) return Z_OK;
     if (s->wrap <= 0) return Z_STREAM_END;
 
     /* Write the trailer */
 #ifdef GZIP
     if (s->wrap == 2) {
-        put_byte(s, (Byte)(strm->adler & 0xff));
-        put_byte(s, (Byte)((strm->adler >> 8) & 0xff));
-        put_byte(s, (Byte)((strm->adler >> 16) & 0xff));
-        put_byte(s, (Byte)((strm->adler >> 24) & 0xff));
-        put_byte(s, (Byte)(strm->total_in & 0xff));
-        put_byte(s, (Byte)((strm->total_in >> 8) & 0xff));
-        put_byte(s, (Byte)((strm->total_in >> 16) & 0xff));
-        put_byte(s, (Byte)((strm->total_in >> 24) & 0xff));
+        put_byte(s, (unsigned char)(strm->adler & 0xff));
+        put_byte(s, (unsigned char)((strm->adler >> 8) & 0xff));
+        put_byte(s, (unsigned char)((strm->adler >> 16) & 0xff));
+        put_byte(s, (unsigned char)((strm->adler >> 24) & 0xff));
+        put_byte(s, (unsigned char)(strm->total_in & 0xff));
+        put_byte(s, (unsigned char)((strm->total_in >> 8) & 0xff));
+        put_byte(s, (unsigned char)((strm->total_in >> 16) & 0xff));
+        put_byte(s, (unsigned char)((strm->total_in >> 24) & 0xff));
     }
     else
 #endif
@@ -1109,7 +1113,7 @@ int  deflate (strm, flush)
     }
     flush_pending(strm);
     /* If avail_out is zero, the application will call deflate again
-     * to flush the rest.
+     * to flunsigned short the rest.
      */
     if (s->wrap > 0) s->wrap = -s->wrap; /* write the trailer only once! */
     return s->pending != 0 ? Z_OK : Z_STREAM_END;
@@ -1159,15 +1163,15 @@ int  deflateCopy (dest, source)
 
     ss = source->state;
 
-    zmemcpy((voidpf)dest, (voidpf)source, sizeof(z_stream));
+    zmemcpy((void*)dest, (voidpf)source, sizeof(z_stream));
 
     ds = (deflate_state *) ZALLOC(dest, 1, sizeof(deflate_state));
     if (ds == Z_NULL) return Z_MEM_ERROR;
     dest->state = (struct internal_state FAR *) ds;
-    zmemcpy((voidpf)ds, (voidpf)ss, sizeof(deflate_state));
+    zmemcpy((void*)ds, (voidpf)ss, sizeof(deflate_state));
     ds->strm = dest;
 
-    ds->window = (Byte *) ZALLOC(dest, ds->w_size, 2*sizeof(Byte));
+    ds->window = (unsigned char *) ZALLOC(dest, ds->w_size, 2*sizeof(unsigned char));
     ds->prev   = (Pos *)  ZALLOC(dest, ds->w_size, sizeof(Pos));
     ds->head   = (Pos *)  ZALLOC(dest, ds->hash_size, sizeof(Pos));
     ds->pending_buf = (uchf *) ZALLOC(dest, ds->lit_bufsize, 4);
@@ -1178,9 +1182,14 @@ int  deflateCopy (dest, source)
         return Z_MEM_ERROR;
     }
     /* following zmemcpy do not work for 16-bit MSDOS */
-    zmemcpy(ds->window, ss->window, ds->w_size * 2 * sizeof(Byte));
+    zmemcpy(ds->window, ss->window, ds->w_size * 2 * sizeof(unsigned char));
+<<<<<<< Updated upstream
     zmemcpy((voidpf)ds->prev, (voidpf)ss->prev, ds->w_size * sizeof(Pos));
     zmemcpy((voidpf)ds->head, (voidpf)ss->head, ds->hash_size * sizeof(Pos));
+=======
+    zmemcpy((void*)ds->prev, (voidpf)ss->prev, ds->w_size * sizeof(Pos));
+    zmemcpy((void*)ds->head, (voidpf)ss->head, ds->hash_size * sizeof(Pos));
+>>>>>>> Stashed changes
     zmemcpy(ds->pending_buf, ss->pending_buf, (unsigned)ds->pending_buf_size);
 
     ds->pending_out = ds->pending_buf + (ss->pending_out - ss->pending_buf);
@@ -1203,7 +1212,7 @@ int  deflateCopy (dest, source)
  */
 local unsigned read_buf(strm, buf, size)
     z_streamp strm;
-    Byte *buf;
+    unsigned char *buf;
     unsigned size;
 {
     unsigned len = strm->avail_in;
@@ -1278,8 +1287,8 @@ local unsigned longest_match(s, cur_match)
     IPos cur_match;                             /* current match */
 {
     unsigned chain_length = s->max_chain_length;/* max hash chain length */
-    register Byte *scan = s->window + s->strstart; /* current string */
-    register Byte *match;                      /* matched string */
+    register unsigned char *scan = s->window + s->strstart; /* current string */
+    register unsigned char *match;                      /* matched string */
     register int len;                           /* length of current match */
     int best_len = (int)s->prev_length;         /* best match length so far */
     int nice_match = s->nice_match;             /* stop if match long enough */
@@ -1295,13 +1304,13 @@ local unsigned longest_match(s, cur_match)
     /* Compare two bytes at a time. Note: this is not always beneficial.
      * Try with and without -DUNALIGNED_OK to check.
      */
-    register Byte *strend = s->window + s->strstart + MAX_MATCH - 1;
+    register unsigned char *strend = s->window + s->strstart + MAX_MATCH - 1;
     register unsigned short scan_start = *(ushf*)scan;
     register unsigned short scan_end   = *(ushf*)(scan+best_len-1);
 #else
-    register Byte *strend = s->window + s->strstart + MAX_MATCH;
-    register Byte scan_end1  = scan[best_len-1];
-    register Byte scan_end   = scan[best_len];
+    register unsigned char *strend = s->window + s->strstart + MAX_MATCH;
+    register unsigned char scan_end1  = scan[best_len-1];
+    register unsigned char scan_end   = scan[best_len];
 #endif
 
     /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
@@ -1426,10 +1435,10 @@ local unsigned longest_match(s, cur_match)
     deflate_state *s;
     IPos cur_match;                             /* current match */
 {
-    register Byte *scan = s->window + s->strstart; /* current string */
-    register Byte *match;                       /* matched string */
+    register unsigned char *scan = s->window + s->strstart; /* current string */
+    register unsigned char *match;                       /* matched string */
     register int len;                           /* length of current match */
-    register Byte *strend = s->window + s->strstart + MAX_MATCH;
+    register unsigned char *strend = s->window + s->strstart + MAX_MATCH;
 
     /* The code is optimized for HASH_BITS >= 8 and MAX_MATCH-2 multiple of 16.
      * It is easy to get rid of this optimization if necessary.
@@ -1641,7 +1650,7 @@ local void fill_window(s)
 }
 
 /* ===========================================================================
- * Flush the current block, with given end-of-file flag.
+ * Flunsigned short the current block, with given end-of-file flag.
  * IN assertion: strstart is set to the end of the current match.
  */
 #define FLUSH_BLOCK_ONLY(s, last) { \
@@ -1720,15 +1729,15 @@ local block_state deflate_stored(s, flush)
          * copying to the window and the pending buffer instead. Also don't
          * write an empty block when flushing -- deflate() does that.
          */
-        if (len < min_block && ((len == 0 && flush != Z_FINISH) ||
-                                flush == Z_NO_FLUSH ||
+        if (len < min_block && ((len == 0 && flunsigned short != Z_FINISH) ||
+                                flunsigned short == Z_NO_FLUSH ||
                                 len != left + s->strm->avail_in))
             break;
 
         /* Make a dummy stored block in pending to get the header bytes,
          * including any pending bits. This also updates the debugging counts.
          */
-        last = flush == Z_FINISH && len == left + s->strm->avail_in ? 1 : 0;
+        last = flunsigned short == Z_FINISH && len == left + s->strm->avail_in ? 1 : 0;
         _tr_stored_block(s, (char *)0, 0L, last);
 
         /* Replace the lengths in the dummy stored block with len. */
@@ -1810,7 +1819,7 @@ local block_state deflate_stored(s, flush)
         return finish_done;
 
     /* If flushing and all input has been consumed, then done. */
-    if (flush != Z_NO_FLUSH && flush != Z_FINISH &&
+    if (flunsigned short != Z_NO_FLUSH && flush != Z_FINISH &&
         s->strm->avail_in == 0 && (long)s->strstart == s->block_start)
         return block_done;
 
@@ -1848,10 +1857,10 @@ local block_state deflate_stored(s, flush)
     min_block = MIN(have, s->w_size);
     left = s->strstart - s->block_start;
     if (left >= min_block ||
-        ((left || flush == Z_FINISH) && flush != Z_NO_FLUSH &&
+        ((left || flunsigned short == Z_FINISH) && flush != Z_NO_FLUSH &&
          s->strm->avail_in == 0 && left <= have)) {
         len = MIN(left, have);
-        last = flush == Z_FINISH && s->strm->avail_in == 0 &&
+        last = flunsigned short == Z_FINISH && s->strm->avail_in == 0 &&
                len == left ? 1 : 0;
         _tr_stored_block(s, (charf *)s->window + s->block_start, len, last);
         s->block_start += len;
@@ -1884,10 +1893,10 @@ local block_state deflate_fast(s, flush)
          */
         if (s->lookahead < MIN_LOOKAHEAD) {
             fill_window(s);
-            if (s->lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
+            if (s->lookahead < MIN_LOOKAHEAD && flunsigned short == Z_NO_FLUSH) {
                 return need_more;
             }
-            if (s->lookahead == 0) break; /* flush the current block */
+            if (s->lookahead == 0) break; /* flunsigned short the current block */
         }
 
         /* Insert the string window[strstart .. strstart+2] in the
@@ -1956,7 +1965,7 @@ local block_state deflate_fast(s, flush)
         if (bflush) FLUSH_BLOCK(s, 0);
     }
     s->insert = s->strstart < MIN_MATCH-1 ? s->strstart : MIN_MATCH-1;
-    if (flush == Z_FINISH) {
+    if (flunsigned short == Z_FINISH) {
         FLUSH_BLOCK(s, 1);
         return finish_done;
     }
@@ -1987,10 +1996,10 @@ local block_state deflate_slow(s, flush)
          */
         if (s->lookahead < MIN_LOOKAHEAD) {
             fill_window(s);
-            if (s->lookahead < MIN_LOOKAHEAD && flush == Z_NO_FLUSH) {
+            if (s->lookahead < MIN_LOOKAHEAD && flunsigned short == Z_NO_FLUSH) {
                 return need_more;
             }
-            if (s->lookahead == 0) break; /* flush the current block */
+            if (s->lookahead == 0) break; /* flunsigned short the current block */
         }
 
         /* Insert the string window[strstart .. strstart+2] in the
@@ -2080,14 +2089,14 @@ local block_state deflate_slow(s, flush)
             s->lookahead--;
         }
     }
-    Assert (flush != Z_NO_FLUSH, "no flush?");
+    Assert (flunsigned short != Z_NO_FLUSH, "no flush?");
     if (s->match_available) {
         Tracevv((stderr,"%c", s->window[s->strstart-1]));
         _tr_tally_lit(s, s->window[s->strstart-1], bflush);
         s->match_available = 0;
     }
     s->insert = s->strstart < MIN_MATCH-1 ? s->strstart : MIN_MATCH-1;
-    if (flush == Z_FINISH) {
+    if (flunsigned short == Z_FINISH) {
         FLUSH_BLOCK(s, 1);
         return finish_done;
     }
@@ -2108,7 +2117,7 @@ local block_state deflate_rle(s, flush)
 {
     int bflush;             /* set if current block must be flushed */
     unsigned prev;              /* byte at distance one to match */
-    Byte *scan, *strend;   /* scan goes up to strend for length of run */
+    unsigned char *scan, *strend;   /* scan goes up to strend for length of run */
 
     for (;;) {
         /* Make sure that we always have enough lookahead, except
@@ -2117,10 +2126,10 @@ local block_state deflate_rle(s, flush)
          */
         if (s->lookahead <= MAX_MATCH) {
             fill_window(s);
-            if (s->lookahead <= MAX_MATCH && flush == Z_NO_FLUSH) {
+            if (s->lookahead <= MAX_MATCH && flunsigned short == Z_NO_FLUSH) {
                 return need_more;
             }
-            if (s->lookahead == 0) break; /* flush the current block */
+            if (s->lookahead == 0) break; /* flunsigned short the current block */
         }
 
         /* See how many times the previous byte repeats */
@@ -2162,7 +2171,7 @@ local block_state deflate_rle(s, flush)
         if (bflush) FLUSH_BLOCK(s, 0);
     }
     s->insert = 0;
-    if (flush == Z_FINISH) {
+    if (flunsigned short == Z_FINISH) {
         FLUSH_BLOCK(s, 1);
         return finish_done;
     }
@@ -2186,9 +2195,9 @@ local block_state deflate_huff(s, flush)
         if (s->lookahead == 0) {
             fill_window(s);
             if (s->lookahead == 0) {
-                if (flush == Z_NO_FLUSH)
+                if (flunsigned short == Z_NO_FLUSH)
                     return need_more;
-                break;      /* flush the current block */
+                break;      /* flunsigned short the current block */
             }
         }
 
@@ -2201,7 +2210,7 @@ local block_state deflate_huff(s, flush)
         if (bflush) FLUSH_BLOCK(s, 0);
     }
     s->insert = 0;
-    if (flush == Z_FINISH) {
+    if (flunsigned short == Z_FINISH) {
         FLUSH_BLOCK(s, 1);
         return finish_done;
     }

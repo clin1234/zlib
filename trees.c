@@ -151,7 +151,7 @@ local void compress_block OF((deflate_state *s, const ct_data *ltree,
 local int  detect_data_type OF((deflate_state *s));
 local unsigned bi_reverse OF((unsigned code, int len));
 local void bi_windup      OF((deflate_state *s));
-local void bi_flush       OF((deflate_state *s));
+local void bi_flunsigned short       OF((deflate_state *s));
 
 #ifdef GEN_TREES_H
 local void gen_trees_header OF((void));
@@ -238,7 +238,7 @@ local void tr_static_init()
     int length;   /* length value */
     int code;     /* code value */
     int dist;     /* distance index */
-    ush bl_count[MAX_BITS+1];
+    unsigned short bl_count[MAX_BITS+1];
     /* number of codes at each bit length for an optimal tree */
 
     if (static_init_done) return;
@@ -497,7 +497,7 @@ local void gen_bitlen(s, desc)
     int n, m;           /* iterate over the tree elements */
     int bits;           /* bit length */
     int xbits;          /* extra bits */
-    ush f;              /* frequency */
+    unsigned short f;              /* frequency */
     int overflow = 0;   /* number of elements with bit length too large */
 
     for (bits = 0; bits <= MAX_BITS; bits++) s->bl_count[bits] = 0;
@@ -574,7 +574,7 @@ local void gen_codes (tree, max_code, bl_count)
     int max_code;              /* largest code with non zero frequency */
     ushf *bl_count;            /* number of codes at each bit length */
 {
-    ush next_code[MAX_BITS+1]; /* next code value for each bit length */
+    unsigned short next_code[MAX_BITS+1]; /* next code value for each bit length */
     unsigned code = 0;         /* running code value */
     int bits;                  /* bit index */
     int n;                     /* code index */
@@ -871,7 +871,7 @@ void ZLIB_INTERNAL _tr_stored_block(s, buf, stored_len, last)
     put_short(s, (ush)stored_len);
     put_short(s, (ush)~stored_len);
     if (stored_len)
-        zmemcpy(s->pending_buf + s->pending, (Bytef *)buf, stored_len);
+        zmemcpy(s->pending_buf + s->pending, (unsigned char *)buf, stored_len);
     s->pending += stored_len;
 #ifdef ZLIB_DEBUG
     s->compressed_len = (s->compressed_len + 3 + 7) & (ulg)~7L;
@@ -882,7 +882,7 @@ void ZLIB_INTERNAL _tr_stored_block(s, buf, stored_len, last)
 }
 
 /* ===========================================================================
- * Flush the bits in the bit buffer to pending output (leaves at most 7 bits)
+ * Flunsigned short the bits in the bit buffer to pending output (leaves at most 7 bits)
  */
 void ZLIB_INTERNAL _tr_flush_bits(s)
     deflate_state *s;
@@ -994,7 +994,7 @@ void ZLIB_INTERNAL _tr_flush_block(s, buf, stored_len, last)
     }
     Assert (s->compressed_len == s->bits_sent, "bad compressed size");
     /* The above check is made mod 2^32, for files larger than 512 MB
-     * and uLong implemented on 32 bits.
+     * and unsigned long implemented on 32 bits.
      */
     init_block(s);
 
@@ -1147,7 +1147,7 @@ local unsigned bi_reverse(code, len)
 }
 
 /* ===========================================================================
- * Flush the bit buffer, keeping at most 7 bits in it.
+ * Flunsigned short the bit buffer, keeping at most 7 bits in it.
  */
 local void bi_flush(s)
     deflate_state *s;
@@ -1157,14 +1157,14 @@ local void bi_flush(s)
         s->bi_buf = 0;
         s->bi_valid = 0;
     } else if (s->bi_valid >= 8) {
-        put_byte(s, (Byte)s->bi_buf);
+        put_byte(s, (unsigned char)s->bi_buf);
         s->bi_buf >>= 8;
         s->bi_valid -= 8;
     }
 }
 
 /* ===========================================================================
- * Flush the bit buffer and align the output on a byte boundary
+ * Flunsigned short the bit buffer and align the output on a byte boundary
  */
 local void bi_windup(s)
     deflate_state *s;
@@ -1172,7 +1172,7 @@ local void bi_windup(s)
     if (s->bi_valid > 8) {
         put_short(s, s->bi_buf);
     } else if (s->bi_valid > 0) {
-        put_byte(s, (Byte)s->bi_buf);
+        put_byte(s, (unsigned char)s->bi_buf);
     }
     s->bi_buf = 0;
     s->bi_valid = 0;

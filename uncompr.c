@@ -24,17 +24,17 @@
    Z_DATA_ERROR if the input data was corrupted, including if the input data is
    an incomplete zlib stream.
 */
-int ZEXPORT uncompress2 (dest, destLen, source, sourceLen)
-    Bytef *dest;
+int uncompress2 (dest, destLen, source, sourceLen)
+    unsigned char *dest;
     uLongf *destLen;
-    const Bytef *source;
-    uLong *sourceLen;
+    const unsigned char *source;
+    unsigned long *sourceLen;
 {
     z_stream stream;
     int err;
-    const uInt max = (uInt)-1;
-    uLong len, left;
-    Byte buf[1];    /* for detection of incomplete stream when *destLen == 0 */
+    const unsigned max = (unsigned)-1;
+    unsigned long len, left;
+    unsigned char buf[1];    /* for detection of incomplete stream when *destLen == 0 */
 
     len = *sourceLen;
     if (*destLen) {
@@ -46,11 +46,11 @@ int ZEXPORT uncompress2 (dest, destLen, source, sourceLen)
         dest = buf;
     }
 
-    stream.next_in = (const Bytef *)source;
+    stream.next_in = (const unsigned char *)source;
     stream.avail_in = 0;
     stream.zalloc = (alloc_func)0;
     stream.zfree = (free_func)0;
-    stream.opaque = (voidpf)0;
+    stream.opaque = (void*)0;
 
     err = inflateInit(&stream);
     if (err != Z_OK) return err;
@@ -60,11 +60,11 @@ int ZEXPORT uncompress2 (dest, destLen, source, sourceLen)
 
     do {
         if (stream.avail_out == 0) {
-            stream.avail_out = left > (uLong)max ? max : (uInt)left;
+            stream.avail_out = left > (uLong)max ? max : (unsigned)left;
             left -= stream.avail_out;
         }
         if (stream.avail_in == 0) {
-            stream.avail_in = len > (uLong)max ? max : (uInt)len;
+            stream.avail_in = len > (uLong)max ? max : (unsigned)len;
             len -= stream.avail_in;
         }
         err = inflate(&stream, Z_NO_FLUSH);
@@ -83,11 +83,11 @@ int ZEXPORT uncompress2 (dest, destLen, source, sourceLen)
            err;
 }
 
-int ZEXPORT uncompress (dest, destLen, source, sourceLen)
-    Bytef *dest;
+int uncompress (dest, destLen, source, sourceLen)
+    unsigned char *dest;
     uLongf *destLen;
-    const Bytef *source;
-    uLong sourceLen;
+    const unsigned char *source;
+    unsigned long sourceLen;
 {
     return uncompress2(dest, destLen, source, &sourceLen);
 }

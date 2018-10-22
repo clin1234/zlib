@@ -293,7 +293,7 @@ local int gz_skip(state, len)
    consulted in that case to determine which. */
 local z_size_t gz_read(state, buf, len)
     gz_statep state;
-    voidp buf;
+    void* buf;
     z_size_t len;
 {
     z_size_t got;
@@ -374,7 +374,7 @@ local z_size_t gz_read(state, buf, len)
 /* -- see zlib.h -- */
 int gzread(file, buf, len)
     gzFile file;
-    voidp buf;
+    void* buf;
     unsigned len;
 {
     gz_statep state;
@@ -409,7 +409,7 @@ int gzread(file, buf, len)
 
 /* -- see zlib.h -- */
 z_size_t gzfread(buf, size, nitems, file)
-    voidp buf;
+    void* buf;
     z_size_t size;
     z_size_t nitems;
     gzFile file;
@@ -501,7 +501,7 @@ int gzungetc(c, file)
             return -1;
     }
 
-    /* can't push EOF */
+    /* can't punsigned short EOF */
     if (c < 0)
         return -1;
 
@@ -517,7 +517,7 @@ int gzungetc(c, file)
 
     /* if no room, give up (must have already done a gzungetc()) */
     if (state->x.have == (state->size << 1)) {
-        gz_error(state, Z_DATA_ERROR, "out of room to push characters");
+        gz_error(state, Z_DATA_ERROR, "out of room to punsigned short characters");
         return -1;
     }
 
