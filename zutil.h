@@ -180,8 +180,8 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 /* provide prototypes for these when building zlib without LFS */
 #if !defined(_WIN32) && \
     (!defined(_LARGEFILE64_SOURCE) || _LFS64_LARGEFILE-0 == 0)
-    ZEXTERN uLong ZEXPORT adler32_combine64 OF((uLong, uLong, z_off_t));
-    ZEXTERN uLong ZEXPORT crc32_combine64 OF((uLong, uLong, z_off_t));
+    extern uLong adler32_combine64 OF((uLong, uLong, z_off_t));
+    extern uLong crc32_combine64 OF((uLong, uLong, z_off_t));
 #endif
 
         /* common defaults */
@@ -220,9 +220,9 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #    define zmemzero(dest, len) memset(dest, 0, len)
 #  endif
 #else
-   void ZLIB_INTERNAL zmemcpy OF((Bytef* dest, const Bytef* source, uInt len));
-   int ZLIB_INTERNAL zmemcmp OF((const Bytef* s1, const Bytef* s2, uInt len));
-   void ZLIB_INTERNAL zmemzero OF((Bytef* dest, uInt len));
+   void ZLIB_INTERNAL zmemcpy OF((unsigned charf* dest, const Bytef* source, uInt len));
+   int ZLIB_INTERNAL zmemcmp OF((const unsigned charf* s1, const Bytef* s2, uInt len));
+   void ZLIB_INTERNAL zmemzero OF((unsigned charf* dest, uInt len));
 #endif
 
 /* Diagnostic functions */

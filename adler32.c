@@ -7,7 +7,7 @@
 
 #include "zutil.h"
 
-local uLong adler32_combine_ OF((uLong adler1, uLong adler2, z_off64_t len2));
+local unsigned long adler32_combine_ OF((unsigned long adler1, uLong adler2, z_off64_t len2));
 
 uLong BASE 65521U; /* largest prime smaller than 65536 */
 #define NMAX 5552
@@ -68,10 +68,17 @@ void MOD63(uLong a)
 #endif
 
 /* ========================================================================= */
-uLong adler32_z(adler, buf, len)
-    uLong adler;
-    const Bytef *buf;
+<<<<<<< Updated upstream
+unsigned long adler32_z(
+    unsigned long adler,
+    const unsigned char* buf,
+    size_t len)
+=======
+unsigned long adler32_z(adler, buf, len)
+    unsigned long adler;
+    const unsigned char *buf;
     z_size_t len;
+>>>>>>> Stashed changes
 {
     unsigned long sum2;
     unsigned n;
@@ -139,19 +146,33 @@ uLong adler32_z(adler, buf, len)
 }
 
 /* ========================================================================= */
-uLong adler32(adler, buf, len)
-    uLong adler;
-    const Bytef *buf;
-    uInt len;
+<<<<<<< Updated upstream
+unsigned long adler32(
+    unsigned long adler,
+    const unsigned char *buf,
+    unsigned len)
+=======
+unsigned long adler32(adler, buf, len)
+    unsigned long adler;
+    const unsigned char *buf;
+    unsigned len;
+>>>>>>> Stashed changes
 {
     return adler32_z(adler, buf, len);
 }
 
 /* ========================================================================= */
-local uLong adler32_combine_(adler1, adler2, len2)
-    uLong adler1;
-    uLong adler2;
+<<<<<<< Updated upstream
+local unsigned long adler32_combine_(
+    unsigned long adler1,
+    unsigned long adler2,
+    z_off64_t len2)
+=======
+local unsigned long adler32_combine_(adler1, adler2, len2)
+    unsigned long adler1;
+    unsigned long adler2;
     z_off64_t len2;
+>>>>>>> Stashed changes
 {
     unsigned long sum1;
     unsigned long sum2;
@@ -177,18 +198,32 @@ local uLong adler32_combine_(adler1, adler2, len2)
 }
 
 /* ========================================================================= */
-uLong adler32_combine(adler1, adler2, len2)
-    uLong adler1;
-    uLong adler2;
+<<<<<<< Updated upstream
+unsigned long adler32_combine(
+    unsigned long adler1,
+    unsigned long adler2,
+    z_off_t len2)
+=======
+unsigned long adler32_combine(adler1, adler2, len2)
+    unsigned long adler1;
+    unsigned long adler2;
     z_off_t len2;
+>>>>>>> Stashed changes
 {
     return adler32_combine_(adler1, adler2, len2);
 }
 
-uLong adler32_combine64(adler1, adler2, len2)
-    uLong adler1;
-    uLong adler2;
+<<<<<<< Updated upstream
+unsigned long adler32_combine64(
+    unsigned long adler1,
+    unsigned long adler2,
+    z_off64_t len2)
+=======
+unsigned long adler32_combine64(adler1, adler2, len2)
+    unsigned long adler1;
+    unsigned long adler2;
     z_off64_t len2;
+>>>>>>> Stashed changes
 {
     return adler32_combine_(adler1, adler2, len2);
 }

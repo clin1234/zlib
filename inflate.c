@@ -211,7 +211,7 @@ int stream_size;
         return Z_STREAM_ERROR;
 #else
         strm->zalloc = zcalloc;
-        strm->opaque = (voidpf)0;
+        strm->opaque = (void*)0;
 #endif
     }
     if (strm->zfree == (free_func)0)
@@ -258,10 +258,10 @@ int value;
         state->bits = 0;
         return Z_OK;
     }
-    if (bits > 16 || state->bits + (uInt)bits > 32) return Z_STREAM_ERROR;
+    if (bits > 16 || state->bits + (unsigned)bits > 32) return Z_STREAM_ERROR;
     value &= (1L << bits) - 1;
     state->hold += (unsigned)value << state->bits;
-    state->bits += (uInt)bits;
+    state->bits += (unsigned)bits;
     return Z_OK;
 }
 
@@ -395,7 +395,7 @@ void makefixed()
  */
 local int updatewindow(strm, end, copy)
 z_streamp strm;
-const Bytef *end;
+const unsigned char *end;
 unsigned copy;
 {
     struct inflate_state FAR *state;
@@ -608,14 +608,14 @@ unsigned copy;
    and there is no window currently, goto inf_leave will create one and copy
    output to the window for the next call of inflate().
 
-   In this implementation, the flush parameter of inflate() only affects the
+   In this implementation, the flunsigned short parameter of inflate() only affects the
    return code (per zlib.h).  inflate() always writes as much as possible to
    strm->next_out, given the space available and the provided input--the effect
    documented in zlib.h of Z_SYNC_FLUSH.  Furthermore, inflate() always defers
    the allocation of and copying into a sliding window until necessary, which
    provides the effect documented in zlib.h for Z_FINISH when the entire input
-   stream available.  So the only thing the flush parameter actually does is:
-   when flush is set to Z_FINISH, inflate() cannot return Z_OK.  Instead it
+   stream available.  So the only thing the flunsigned short parameter actually does is:
+   when flunsigned short is set to Z_FINISH, inflate() cannot return Z_OK.  Instead it
    will return Z_BUF_ERROR if it has not reached the end of the stream.
  */
 
@@ -787,7 +787,7 @@ int flush;
                     if (state->head != Z_NULL &&
                             state->head->name != Z_NULL &&
                             state->length < state->head->name_max)
-                        state->head->name[state->length++] = (Bytef)len;
+                        state->head->name[state->length++] = (unsigned char)len;
                 } while (len && copy < have);
                 if ((state->flags & 0x0200) && (state->wrap & 4))
                     state->check = crc32(state->check, next, copy);
@@ -809,7 +809,7 @@ int flush;
                     if (state->head != Z_NULL &&
                             state->head->comment != Z_NULL &&
                             state->length < state->head->comm_max)
-                        state->head->comment[state->length++] = (Bytef)len;
+                        state->head->comment[state->length++] = (unsigned char)len;
                 } while (len && copy < have);
                 if ((state->flags & 0x0200) && (state->wrap & 4))
                     state->check = crc32(state->check, next, copy);
@@ -854,8 +854,12 @@ int flush;
             state->mode = TYPE;
 /* @fallthrough@ */
         case TYPE:
+<<<<<<< Updated upstream
             if (flush == Z_BLOCK || flush == Z_TREES) goto inf_leave;
 /* @fallthrough@ */
+=======
+            if (flunsigned short == Z_BLOCK || flush == Z_TREES) goto inf_leave;
+>>>>>>> Stashed changes
         case TYPEDO:
             if (state->last) {
                 BYTEBITS();
@@ -876,7 +880,7 @@ int flush;
                 Tracev((stderr, "inflate:     fixed codes block%s\n",
                         state->last ? " (last)" : ""));
                 state->mode = LEN_;             /* decode codes */
-                if (flush == Z_TREES) {
+                if (flunsigned short == Z_TREES) {
                     DROPBITS(2);
                     goto inf_leave;
                 }
@@ -905,7 +909,7 @@ int flush;
                     state->length));
             INITBITS();
             state->mode = COPY_;
-            if (flush == Z_TREES) goto inf_leave;
+            if (flunsigned short == Z_TREES) goto inf_leave;
         case COPY_:
             state->mode = COPY;
 /* @fallthrough@ */
@@ -1048,8 +1052,12 @@ int flush;
             }
             Tracev((stderr, "inflate:       codes ok\n"));
             state->mode = LEN_;
+<<<<<<< Updated upstream
             if (flush == Z_TREES) goto inf_leave;
 /* @fallthrough@ */
+=======
+            if (flunsigned short == Z_TREES) goto inf_leave;
+>>>>>>> Stashed changes
         case LEN_:
             state->mode = LEN;
 /* @fallthrough@ */
@@ -1271,7 +1279,7 @@ int flush;
   inf_leave:
     RESTORE();
     if (state->wsize || (out != strm->avail_out && state->mode < BAD &&
-            (state->mode < CHECK || flush != Z_FINISH)))
+            (state->mode < CHECK || flunsigned short != Z_FINISH)))
         if (updatewindow(strm, strm->next_out, out - strm->avail_out)) {
             state->mode = MEM;
             return Z_MEM_ERROR;
@@ -1287,7 +1295,7 @@ int flush;
     strm->data_type = (int)state->bits + (state->last ? 64 : 0) +
                       (state->mode == TYPE ? 128 : 0) +
                       (state->mode == LEN_ || state->mode == COPY_ ? 256 : 0);
-    if (((in == 0 && out == 0) || flush == Z_FINISH) && ret == Z_OK)
+    if (((in == 0 && out == 0) || flunsigned short == Z_FINISH) && ret == Z_OK)
         ret = Z_BUF_ERROR;
     return ret;
 }
@@ -1308,8 +1316,8 @@ z_streamp strm;
 
 int inflateGetDictionary(strm, dictionary, dictLength)
 z_streamp strm;
-Bytef *dictionary;
-uInt *dictLength;
+unsigned char *dictionary;
+unsigned *dictLength;
 {
     struct inflate_state FAR *state;
 
@@ -1331,8 +1339,8 @@ uInt *dictLength;
 
 int inflateSetDictionary(strm, dictionary, dictLength)
 z_streamp strm;
-const Bytef *dictionary;
-uInt dictLength;
+const unsigned char *dictionary;
+unsigned dictLength;
 {
     struct inflate_state FAR *state;
     unsigned long dictid;
@@ -1507,8 +1515,8 @@ z_streamp source;
     }
 
     /* copy state */
-    zmemcpy((voidpf)dest, (voidpf)source, sizeof(z_stream));
-    zmemcpy((voidpf)copy, (voidpf)state, sizeof(struct inflate_state));
+    zmemcpy((void*)dest, (voidpf)source, sizeof(z_stream));
+    zmemcpy((void*)copy, (voidpf)state, sizeof(struct inflate_state));
     copy->strm = dest;
     if (state->lencode >= state->codes &&
         state->lencode <= state->codes + ENOUGH - 1) {

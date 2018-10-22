@@ -19,36 +19,42 @@
    memory, Z_BUF_ERROR if there was not enough room in the output buffer,
    Z_STREAM_ERROR if the level parameter is invalid.
 */
-int compress2 (Byte* dest, uLong* destLen, const Byte* source, \
-uLong sourceLen, int level)
+int compress2 (
+    unsigned char *dest,
+    unsigned long *destLen,
+    const unsigned char *source,
+    unsigned long sourceLen,
+    int level)
 {
     z_stream stream;
     int err;
-    const uInt max = (uInt) -1;
-    uLong left;
+    const unsigned max = (unsigned)-1;
+    unsigned long left;
 
     left = *destLen;
     *destLen = 0;
 
-    stream.zalloc = (alloc_func) 0;
-    stream.zfree = (free_func) 0;
-    stream.opaque = (voidpf) 0;
+    stream.zalloc = (alloc_func)0;
+    stream.zfree = (free_func)0;
+    stream.opaque = (void*)0;
 
     err = deflateInit(&stream, level);
     if (err != Z_OK) return err;
 
     stream.next_out = dest;
     stream.avail_out = 0;
-    stream.next_in = (const Bytef *)source;
+    stream.next_in = (const unsigned char *)source;
     stream.avail_in = 0;
 
     do {
         if (stream.avail_out == 0) {
-            stream.avail_out = left > (uLong) max ? max : (uInt) left;
+            stream.avail_out = left > (unsigned long)max ? max : \
+              (unsigned)left;
             left -= stream.avail_out;
         }
         if (stream.avail_in == 0) {
-            stream.avail_in = sourceLen > (uLong) max ? max : (uInt) sourceLen;
+            stream.avail_in = sourceLen > (unsigned long)max ? max : \
+              (unsigned)sourceLen;
             sourceLen -= stream.avail_in;
         }
         err = deflate(&stream, sourceLen ? Z_NO_FLUSH : Z_FINISH);
@@ -61,7 +67,8 @@ uLong sourceLen, int level)
 
 /* ===========================================================================
  */
-int compress (Byte dest, uLong destLen, const Byte* source, uLong sourceLen)
+int compress (unsigned long* dest, unsigned long* destLen, \
+const unsigned char* source, unsigned long sourceLen)
 {
     return compress2(dest, destLen, source, sourceLen, Z_DEFAULT_COMPRESSION);
 }
@@ -70,7 +77,7 @@ int compress (Byte dest, uLong destLen, const Byte* source, uLong sourceLen)
      If the default memLevel or windowBits for deflateInit() is changed, then
    this function needs to be updated.
  */
-uLong compressBound (uLong sourceLen)
+unsigned long compressBound (unsigned long sourceLen)
 {
     return sourceLen + (sourceLen >> 12) + (sourceLen >> 14) +
            (sourceLen >> 25) + 13;

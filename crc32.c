@@ -48,7 +48,7 @@
 local unsigned long gf2_matrix_times OF((unsigned long *mat,
                                          unsigned long vec));
 local void gf2_matrix_square OF((unsigned long *square, unsigned long *mat));
-local uLong crc32_combine_ OF((uLong crc1, uLong crc2, z_off64_t len2));
+local unsigned long crc32_combine_ OF((unsigned long crc1, uLong crc2, z_off64_t len2));
 
 
 #ifdef DYNAMIC_CRC_TABLE
@@ -237,7 +237,7 @@ unsigned long crc32_z(crc, buf, len)
 unsigned long crc32(crc, buf, len)
     unsigned long crc;
     const unsigned char FAR *buf;
-    uInt len;
+    unsigned len;
 {
     return crc32_z(crc, buf, len);
 }
@@ -369,9 +369,9 @@ local void gf2_matrix_square(square, mat)
 }
 
 /* ========================================================================= */
-local uLong crc32_combine_(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
+local unsigned long crc32_combine_(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
     z_off64_t len2;
 {
     int n;
@@ -425,17 +425,29 @@ local uLong crc32_combine_(crc1, crc2, len2)
 }
 
 /* ========================================================================= */
-uLong crc32_combine(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
+<<<<<<< Updated upstream
+unsigned long crc32_combine(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
+=======
+unsigned long crc32_combine(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
+>>>>>>> Stashed changes
     z_off_t len2;
 {
     return crc32_combine_(crc1, crc2, len2);
 }
 
-uLong crc32_combine64(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
+<<<<<<< Updated upstream
+unsigned long crc32_combine64(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
+=======
+unsigned long crc32_combine64(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
+>>>>>>> Stashed changes
     z_off64_t len2;
 {
     return crc32_combine_(crc1, crc2, len2);

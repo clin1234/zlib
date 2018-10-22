@@ -138,8 +138,8 @@
 #  define zlibVersion           z_zlibVersion
 
 /* all zlib typedefs in zlib.h and zconf.h */
-#  define Byte                  z_Byte
-#  define Bytef                 z_Bytef
+#  define unsigned char                  z_unsigned char
+#  define unsigned char                 z_unsigned charf
 #  define alloc_func            z_alloc_func
 #  define charf                 z_charf
 #  define free_func             z_free_func
@@ -151,12 +151,12 @@
 #  define in_func               z_in_func
 #  define intf                  z_intf
 #  define out_func              z_out_func
-#  define uInt                  z_uInt
+#  define unsigned                  z_uInt
 #  define uIntf                 z_uIntf
 #  define uLong                 z_uLong
 #  define uLongf                z_uLongf
-#  define voidp                 z_voidp
-#  define voidpc                z_voidpc
+#  define void*                 z_voidp
+#  define const void*                z_voidpc
 #  define voidpf                z_voidpf
 
 /* all zlib structs in zlib.h and zconf.h */
@@ -221,8 +221,6 @@
  for small objects.
 */
 
-                        /* Type declarations */
-
 #ifndef OF /* function prototypes */
 #  ifdef STDC
 #    define OF(args)  args
@@ -237,6 +235,7 @@
 #  endif
 #endif
 
+<<<<<<< Updated upstream
 #ifndef ZEXPORT
 #  define ZEXPORT
 #endif
@@ -244,12 +243,15 @@
 #  define ZEXPORTVA
 #endif
 
+=======
+>>>>>>> Stashed changes
 #ifndef FAR
 #  define FAR
 #endif
 
 #if !defined(__MACTYPES__)
-typedef unsigned char  Byte;  /* 8 bits */
+typedef unsigned char  unsigned char;  /* 8 bits */
+<<<<<<< Updated upstream
 #endif
 typedef unsigned int   uInt;  /* 16 bits or more */
 typedef unsigned long  uLong; /* 32 bits or more */
@@ -259,10 +261,12 @@ typedef unsigned long  uLong; /* 32 bits or more */
    typedef void FAR   *voidpf;
    typedef void       *voidp;
 #else
-   typedef Byte const *voidpc;
-   typedef Byte FAR   *voidpf;
-   typedef Byte       *voidp;
+   typedef unsigned char const *voidpc;
+   typedef unsigned char FAR   *voidpf;
+   typedef unsigned char       *voidp;
 #endif
+=======
+>>>>>>> Stashed changes
 
 #if !defined(Z_U4) && !defined(Z_SOLO) && defined(STDC)
 #  include <limits.h>
@@ -335,12 +339,6 @@ typedef unsigned long  uLong; /* 32 bits or more */
 #  define Z_WANT64
 #endif
 
-#if !defined(SEEK_SET) && !defined(Z_SOLO)
-#  define SEEK_SET        0       /* Seek from beginning of file.  */
-#  define SEEK_CUR        1       /* Seek from current position.  */
-#  define SEEK_END        2       /* Set file pointer to EOF plus "offset" */
-#endif
-
 #ifndef z_off_t
 #  define z_off_t long
 #endif
@@ -351,4 +349,10 @@ typedef unsigned long  uLong; /* 32 bits or more */
 #    define z_off64_t z_off_t
 #endif
 
+<<<<<<< Updated upstream
 #endif /* ZCONF_H */
+=======
+#endif
+
+#endif /* ZCONF_H */
+>>>>>>> Stashed changes

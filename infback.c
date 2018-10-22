@@ -46,7 +46,7 @@ int stream_size;
         return Z_STREAM_ERROR;
 #else
         strm->zalloc = zcalloc;
-        strm->opaque = (voidpf)0;
+        strm->opaque = (void*)0;
 #endif
     }
     if (strm->zfree == (free_func)0)
@@ -61,7 +61,7 @@ int stream_size;
     Tracev((stderr, "inflate: allocated\n"));
     strm->state = (struct internal_state FAR *)state;
     state->dmax = 32768U;
-    state->wbits = (uInt)windowBits;
+    state->wbits = (unsigned)windowBits;
     state->wsize = 1U << windowBits;
     state->window = window;
     state->wnext = 0;

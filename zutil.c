@@ -29,12 +29,16 @@ const char * zlibVersion()
     return ZLIB_VERSION;
 }
 
-uLong zlibCompileFlags()
+<<<<<<< Updated upstream
+unsigned long zlibCompileFlags()
+=======
+unsigned long zlibCompileFlags()
+>>>>>>> Stashed changes
 {
-    uLong flags;
+    unsigned long flags;
 
     flags = 0;
-    switch ((int)(sizeof(uInt))) {
+    switch ((int)(sizeof(unsigned))) {
     case 2:     break;
     case 4:     flags += 1;     break;
     case 8:     flags += 2;     break;
@@ -46,7 +50,7 @@ uLong zlibCompileFlags()
     case 8:     flags += 2 << 2;        break;
     default:    flags += 3 << 2;
     }
-    switch ((int)(sizeof(voidpf))) {
+    switch ((int)(sizeof(void*))) {
     case 2:     break;
     case 4:     flags += 1 << 4;        break;
     case 8:     flags += 2 << 4;        break;
@@ -147,9 +151,9 @@ const char * zError(err)
 #ifndef HAVE_MEMCPY
 
 void ZLIB_INTERNAL zmemcpy(dest, source, len)
-    Bytef* dest;
-    const Bytef* source;
-    uInt  len;
+    unsigned char* dest;
+    const unsigned char* source;
+    unsigned  len;
 {
     if (len == 0) return;
     do {
@@ -158,11 +162,11 @@ void ZLIB_INTERNAL zmemcpy(dest, source, len)
 }
 
 int ZLIB_INTERNAL zmemcmp(s1, s2, len)
-    const Bytef* s1;
-    const Bytef* s2;
-    uInt  len;
+    const unsigned char* s1;
+    const unsigned char* s2;
+    unsigned  len;
 {
-    uInt j;
+    unsigned j;
 
     for (j = 0; j < len; j++) {
         if (s1[j] != s2[j]) return 2*(s1[j] > s2[j])-1;
@@ -171,8 +175,8 @@ int ZLIB_INTERNAL zmemcmp(s1, s2, len)
 }
 
 void ZLIB_INTERNAL zmemzero(dest, len)
-    Bytef* dest;
-    uInt  len;
+    unsigned char* dest;
+    unsigned  len;
 {
     if (len == 0) return;
     do {
@@ -202,8 +206,8 @@ void ZLIB_INTERNAL zmemzero(dest, len)
 local int next_ptr = 0;
 
 typedef struct ptr_table_s {
-    voidpf org_ptr;
-    voidpf new_ptr;
+    void* org_ptr;
+    void* new_ptr;
 } ptr_table;
 
 local ptr_table table[MAX_PTR];
@@ -214,9 +218,9 @@ local ptr_table table[MAX_PTR];
  * a protected system like OS/2. Use Microsoft C instead.
  */
 
-voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, unsigned items, unsigned size)
+void* ZLIB_INTERNAL zcalloc (void* opaque, unsigned items, unsigned size)
 {
-    voidpf buf;
+    void* buf;
     ulg bsize = (ulg)items*size;
 
     (void)opaque;
@@ -240,7 +244,7 @@ voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, unsigned items, unsigned size)
     return buf;
 }
 
-void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
+void ZLIB_INTERNAL zcfree (void* opaque, void* ptr)
 {
     int n;
 
@@ -277,13 +281,13 @@ void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
 #  define _hfree   hfree
 #endif
 
-voidpf ZLIB_INTERNAL zcalloc (voidpf opaque, uInt items, uInt size)
+void* ZLIB_INTERNAL zcalloc (void* opaque, unsigned items, unsigned size)
 {
     (void)opaque;
     return _halloc((long)items, size);
 }
 
-void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
+void ZLIB_INTERNAL zcfree (void* opaque, void* ptr)
 {
     (void)opaque;
     _hfree(ptr);
@@ -297,24 +301,24 @@ void ZLIB_INTERNAL zcfree (voidpf opaque, voidpf ptr)
 #ifndef MY_ZCALLOC /* Any system without a special alloc function */
 
 #ifndef STDC
-extern voidp  malloc OF((uInt size));
-extern voidp  calloc OF((uInt items, uInt size));
-extern void   free   OF((voidpf ptr));
+extern void*  malloc OF((unsigned size));
+extern void*  calloc OF((unsigned items, unsigned size));
+extern void   free   OF((void* ptr));
 #endif
 
-voidpf ZLIB_INTERNAL zcalloc (opaque, items, size)
-    voidpf opaque;
+void* ZLIB_INTERNAL zcalloc (opaque, items, size)
+    void* opaque;
     unsigned items;
     unsigned size;
 {
     (void)opaque;
-    return sizeof(uInt) > 2 ? (voidpf)malloc(items * size) :
-                              (voidpf)calloc(items, size);
+    return sizeof(unsigned) > 2 ? (void*)malloc(items * size) :
+                              (void*)calloc(items, size);
 }
 
 void ZLIB_INTERNAL zcfree (opaque, ptr)
-    voidpf opaque;
-    voidpf ptr;
+    void* opaque;
+    void* ptr;
 {
     (void)opaque;
     free(ptr);
