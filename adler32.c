@@ -1,3 +1,4 @@
+/* Modifications by Charlie Lin. (C) 2018. */
 /* adler32.c -- compute the Adler-32 checksum of a data stream
  * Copyright (C) 1995-2011, 2016 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
@@ -7,10 +8,11 @@
 
 #include "zutil.h"
 
-local unsigned long adler32_combine_ OF((unsigned long adler1, uLong adler2, z_off64_t len2));
+local unsigned long adler32_combine_
+(unsigned long adler1, uLong adler2, z_off64_t len2);
 
-uLong BASE 65521U; /* largest prime smaller than 65536 */
-#define NMAX 5552
+const unsigned BASE 65521; /* largest prime smaller than 65536 */
+const unsigned NMAX 5552;
 /* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
 
 #define DO1(buf,i)  {adler += (buf)[i]; sum2 += adler;}
@@ -62,9 +64,9 @@ void MOD63(uLong a)
     } while (0);
 }
 #else
-#  define MOD(a) a %= BASE
-#  define MOD28(a) a %= BASE
-#  define MOD63(a) a %= BASE
+void MOD(unsigned long a) a %= BASE;
+void MOD28(unsigned long a) a %= BASE;
+void MOD63(unsigned long a) a %= BASE;
 #endif
 
 /* ========================================================================= */
@@ -73,12 +75,6 @@ unsigned long adler32_z(
     unsigned long adler,
     const unsigned char* buf,
     size_t len)
-=======
-unsigned long adler32_z(adler, buf, len)
-    unsigned long adler;
-    const unsigned char *buf;
-    z_size_t len;
->>>>>>> Stashed changes
 {
     unsigned long sum2;
     unsigned n;
@@ -99,7 +95,7 @@ unsigned long adler32_z(adler, buf, len)
     }
 
     /* initial Adler-32 value (deferred check for len == 1 speed) */
-    if (buf == Z_NULL)
+    if (buf == NULL)
         return 1L;
 
     /* in case short lengths are provided, keep it somewhat fast */
@@ -151,12 +147,6 @@ unsigned long adler32(
     unsigned long adler,
     const unsigned char *buf,
     unsigned len)
-=======
-unsigned long adler32(adler, buf, len)
-    unsigned long adler;
-    const unsigned char *buf;
-    unsigned len;
->>>>>>> Stashed changes
 {
     return adler32_z(adler, buf, len);
 }
@@ -167,12 +157,6 @@ local unsigned long adler32_combine_(
     unsigned long adler1,
     unsigned long adler2,
     z_off64_t len2)
-=======
-local unsigned long adler32_combine_(adler1, adler2, len2)
-    unsigned long adler1;
-    unsigned long adler2;
-    z_off64_t len2;
->>>>>>> Stashed changes
 {
     unsigned long sum1;
     unsigned long sum2;
@@ -203,12 +187,6 @@ unsigned long adler32_combine(
     unsigned long adler1,
     unsigned long adler2,
     z_off_t len2)
-=======
-unsigned long adler32_combine(adler1, adler2, len2)
-    unsigned long adler1;
-    unsigned long adler2;
-    z_off_t len2;
->>>>>>> Stashed changes
 {
     return adler32_combine_(adler1, adler2, len2);
 }
@@ -218,12 +196,6 @@ unsigned long adler32_combine64(
     unsigned long adler1,
     unsigned long adler2,
     z_off64_t len2)
-=======
-unsigned long adler32_combine64(adler1, adler2, len2)
-    unsigned long adler1;
-    unsigned long adler2;
-    z_off64_t len2;
->>>>>>> Stashed changes
 {
     return adler32_combine_(adler1, adler2, len2);
 }

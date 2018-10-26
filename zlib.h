@@ -77,7 +77,7 @@ extern "C" {
   even in the case of corrupted input.
 */
 
-typedef voidpf (*alloc_func) (void* opaque, unsigned items, unsigned size);
+typedef void* (*alloc_func) (void* opaque, unsigned items, unsigned size);
 typedef void   (*free_func)  (void* opaque, void* address);
 
 struct internal_state;
@@ -113,7 +113,7 @@ typedef struct gz_header_s {
     unsigned long   time;       /* modification time */
     int     xflags;     /* extra flags (not used when writing a gzip file) */
     int     os;         /* operating system */
-    Byte* extra;     /* pointer to extra field or Z_NULL if none */
+    unsigned char* extra;     /* pointer to extra field or Z_NULL if none */
     unsigned    extra_len;  /* extra field length (valid if extra != Z_NULL) */
     unsigned    extra_max;  /* space at extra (only when reading header) */
     unsigned char* name;   /* pointer to zero-terminated file name or Z_NULL */
@@ -208,8 +208,6 @@ typedef struct gz_header_s {
 
 #define Z_DEFLATED   8
 /* The deflate compression method (the only one supported in this version) */
-
-#define Z_NULL NULL /* for initializing zalloc, zfree, opaque */
 
 #define zlib_version zlibVersion()
 /* for compatibility with versions < 1.0.2 */
@@ -1091,8 +1089,7 @@ extern int inflateBackInit (z_streamp strm, int windowBits,
    the version of the header file.
 */
 
-typedef unsigned (*in_func)(void*,
-                                const unsigned char**);
+typedef unsigned (*in_func)(void*, const unsigned char**);
 typedef int (*out_func)(void*, unsigned char*, unsigned);
 
 extern int   inflateBack(z_stream* strm,
@@ -1226,7 +1223,7 @@ extern unsigned long zlibCompileFlags (void);
    you need special options.
 */
 
-extern int compress(unsigned char *dest,   uLong* destLen,
+extern int compress(unsigned char *dest, uLong* destLen,
  const unsigned char *source, unsigned long sourceLen);
 /*
      Compresses the source buffer into the destination buffer.  sourceLen is
@@ -1466,7 +1463,7 @@ extern z_size_t gzfwrite (const void* buf, z_size_t size,
    is returned, and the error state is set to Z_STREAM_ERROR.
 */
 
-extern int  gzprintf Z_ARG((gzFile file, const char *format, ...);
+extern int  gzprintf (gzFile file, const char *format, ...);
 /*
      Converts, formats, and writes the arguments to the compressed file under
    control of the format string, as in fprintf.  gzprintf returns the number of
@@ -1686,7 +1683,8 @@ extern void gzclearerr (gzFile file);
    library.
 */
 
-extern unsigned long adler32(uLong adler, const unsigned char *buf, unsigned len);
+extern unsigned long adler32(unsigned long adler,
+  const unsigned char *buf, unsigned len);
 /*
      Update a running Adler-32 checksum with the bytes buf[0..len-1] and
    return the updated checksum.  If buf is Z_NULL, this function returns the
@@ -1705,7 +1703,7 @@ extern unsigned long adler32(uLong adler, const unsigned char *buf, unsigned len
      if (adler != original_adler) error();
 */
 
-extern unsigned long   adler32_z(uLong adler, const unsigned char *buf,
+extern unsigned long   adler32_z(unsigned long adler, const unsigned char *buf,
                                     z_size_t len);
 /*
      Same as adler32(), but with a size_t length.
@@ -1723,7 +1721,8 @@ extern unsigned long adler32_combine (uLong adler1, uLong adler2,
    negative, the result has no meaning or utility.
 */
 
-extern unsigned long   crc32  (uLong crc, const unsigned char *buf, unsigned len);
+extern unsigned long   crc32  (unsigned long crc,
+  const unsigned char *buf, unsigned len);
 /*
      Update a running CRC-32 with the bytes buf[0..len-1] and return the
    updated CRC-32.  If buf is Z_NULL, this function returns the required
@@ -1740,7 +1739,7 @@ extern unsigned long   crc32  (uLong crc, const unsigned char *buf, unsigned len
      if (crc != original_crc) error();
 */
 
-extern unsigned long crc32_z (uLong crc, const Bytef *buf,
+extern unsigned long crc32_z (unsigned long crc, const unsigned char *buf,
                                   z_size_t len);
 /*
      Same as crc32(), but with a size_t length.

@@ -6,23 +6,23 @@
 #include "gzguts.h"
 
 /* Local functions */
-local int gz_load OF((gz_statep, unsigned char *, unsigned, unsigned *));
-local int gz_avail OF((gz_statep));
-local int gz_look OF((gz_statep));
-local int gz_decomp OF((gz_statep));
-local int gz_fetch OF((gz_statep));
-local int gz_skip OF((gz_statep, z_off64_t));
-local z_size_t gz_read OF((gz_statep, voidp, z_size_t));
+local int gz_load (gz_state*, unsigned char *, unsigned, unsigned *));
+local int gz_avail (gz_state*);
+local int gz_look (gz_state*);
+local int gz_decomp (gz_state*);
+local int gz_fetch (gz_state*);
+local int gz_skip (gz_state*, z_off64_t);
+local z_size_t gz_read (gz_statep, voidp, z_size_t);
 
 /* Use read() to load a buffer -- return -1 on error, otherwise 0.  Read from
    state->fd, and update state->eof, state->err, and state->msg as appropriate.
    This function needs to loop on read(), since read() is not guaranteed to
    read the number of bytes requested, depending on the type of descriptor. */
-local int gz_load(state, buf, len, have)
-    gz_statep state;
-    unsigned char *buf;
-    unsigned len;
-    unsigned *have;
+local int gz_load(
+    gz_statep state,
+    unsigned char *buf,
+    unsigned len,
+    unsigned *have,
 {
     int ret;
     unsigned get, max = ((unsigned)-1 >> 2) + 1;
@@ -53,8 +53,8 @@ local int gz_load(state, buf, len, have)
    If strm->avail_in != 0, then the current data is moved to the beginning of
    the input buffer, and then the remainder of the buffer is loaded with the
    available data from the input file. */
-local int gz_avail(state)
-    gz_statep state;
+local int gz_avail(
+    gz_statep state)
 {
     unsigned got;
     z_streamp strm = &(state->strm);

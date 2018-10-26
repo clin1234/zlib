@@ -1,13 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-  "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta charset="utf-8" />
 <title>zlib Usage Example</title>
 <!--  Copyright (c) 2004, 2005 Mark Adler.  -->
 </head>
 <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#00A000">
-<h2 align="center"> zlib Usage Example </h2>
+<h1 align="center"> zlib Usage Example </h1>
 We often get questions about how the <tt>deflate()</tt> and <tt>inflate()</tt> functions should be used.
 Users wonder when they should provide more input, when they should use more output,
 what to do with a <tt>Z_BUF_ERROR</tt>, how to make sure the process terminates properly, and
@@ -18,7 +17,7 @@ annotations are interspersed between lines of the code.  So please read between 
 We hope this helps explain some of the intricacies of <em>zlib</em>.
 <p>
 Without further adieu, here is the program <a href="zpipe.c"><tt>zpipe.c</tt></a>:
-<pre><b>
+<pre><code class="language-c"><b>
 /* zpipe.c: example of proper use of zlib's inflate() and deflate()
    Not copyrighted -- provided to the public domain
    Version 1.4  11 December 2005  Mark Adler */
@@ -32,7 +31,7 @@ Without further adieu, here is the program <a href="zpipe.c"><tt>zpipe.c</tt></a
    1.4  11 Dec 2005  Add hack to avoid MSDOS end-of-line conversions
                      Avoid some compiler warnings for input and output buffers
  */
-</b></pre><!-- -->
+</b></code></pre>
 We now include the header files for the required definitions.  From
 <tt>stdio.h</tt> we use <tt>fopen()</tt>, <tt>fread()</tt>, <tt>fwrite()</tt>,
 <tt>feof()</tt>, <tt>ferror()</tt>, and <tt>fclose()</tt> for file i/o, and
@@ -44,19 +43,19 @@ we use the basic compression functions <tt>deflateInit()</tt>,
 <tt>deflate()</tt>, and <tt>deflateEnd()</tt>, and the basic decompression
 functions <tt>inflateInit()</tt>, <tt>inflate()</tt>, and
 <tt>inflateEnd()</tt>.
-<pre><b>
+<pre><code class="language-c"><b>
 #include &lt;stdio.h&gt;
 #include &lt;string.h&gt;
 #include &lt;assert.h&gt;
 #include "zlib.h"
-</b></pre><!-- -->
+</b></code></pre>
 This is an ugly hack required to avoid corruption of the input and output data on
 Windows/MS-DOS systems.  Without this, those systems would assume that the input and output
 files are text, and try to convert the end-of-line characters from one standard to
 another.  That would corrupt binary data, and in particular would render the compressed data unusable.
 This sets the input and output to binary which suppresses the end-of-line conversions.
 <tt>SET_BINARY_MODE()</tt> will be used later on <tt>stdin</tt> and <tt>stdout</tt>, at the beginning of <tt>main()</tt>.
-<pre><b>
+<pre><code class="langauge-c"><b>
 #if defined(MSDOS) || defined(OS2) || defined(WIN32) || defined(__CYGWIN__)
 #  include &lt;fcntl.h&gt;
 #  include &lt;io.h&gt;
@@ -64,7 +63,7 @@ This sets the input and output to binary which suppresses the end-of-line conver
 #else
 #  define SET_BINARY_MODE(file)
 #endif
-</b></pre><!-- -->
+</b></code></pre>
 <tt>CHUNK</tt> is simply the buffer size for feeding data to and pulling data
 from the <em>zlib</em> routines.  Larger buffer sizes would be more efficient,
 especially for <tt>inflate()</tt>.  If the memory is available, buffers sizes
@@ -77,7 +76,7 @@ will be in the <em>zlib</em> format, which is different from the <em>gzip</em> o
 formats.  The <em>zlib</em> format has a very small header of only two bytes to identify it as
 a <em>zlib</em> stream and to provide decoding information, and a four-byte trailer with a fast
 check value to verify the integrity of the uncompressed data after decoding.
-<pre><b>
+<pre><code class="language-c"><b>
 /* Compress from file source to file dest until EOF on source.
    def() returns Z_OK on success, Z_MEM_ERROR if memory could not be
    allocated for processing, Z_STREAM_ERROR if an invalid compression
@@ -86,7 +85,7 @@ check value to verify the integrity of the uncompressed data after decoding.
    an error reading or writing the files. */
 int def(FILE *source, FILE *dest, int level)
 {
-</b></pre>
+</b></code></pre>
 Here are the local variables for <tt>def()</tt>.  <tt>ret</tt> will be used for <em>zlib</em>
 return codes.  <tt>flush</tt> will keep track of the current flushing state for <tt>deflate()</tt>,
 which is either no flushing, or flush to completion after the end of the input file is reached.
@@ -94,13 +93,13 @@ which is either no flushing, or flush to completion after the end of the input f
 is used to pass information to and from the <em>zlib</em> routines, and to maintain the
 <tt>deflate()</tt> state.  <tt>in</tt> and <tt>out</tt> are the input and output buffers for
 <tt>deflate()</tt>.
-<pre><b>
+<pre><code class="language-c"><b>
     int ret, flush;
     unsigned have;
     z_stream strm;
     unsigned char in[CHUNK];
     unsigned char out[CHUNK];
-</b></pre><!-- -->
+</b></code></pre><!-- -->
 The first thing we do is to initialize the <em>zlib</em> state for compression using
 <tt>deflateInit()</tt>.  This must be done before the first use of <tt>deflate()</tt>.
 The <tt>zalloc</tt>, <tt>zfree</tt>, and <tt>opaque</tt> fields in the <tt>strm</tt>
@@ -135,7 +134,7 @@ is especially important for environments in which <em>zlib</em> is a shared libr
 Note that an application can initialize multiple, independent <em>zlib</em> streams, which can
 operate in parallel.  The state information maintained in the structure allows the <em>zlib</em>
 routines to be reentrant.
-<pre><b>
+<pre><code class="language-c"><b>
     /* allocate deflate state */
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -143,7 +142,7 @@ routines to be reentrant.
     ret = deflateInit(&amp;strm, level);
     if (ret != Z_OK)
         return ret;
-</b></pre><!-- -->
+</b></code></pre>
 With the pleasantries out of the way, now we can get down to business.  The outer <tt>do</tt>-loop
 reads all of the input file and exits at the bottom of the loop once end-of-file is reached.
 This loop contains the only call of <tt>deflate()</tt>.  So we must make sure that all of the
@@ -504,9 +503,9 @@ Here is the <tt>main()</tt> routine used to test <tt>def()</tt> and <tt>inf()</t
 <tt>zpipe</tt> command is simply a compression pipe from <tt>stdin</tt> to <tt>stdout</tt>, if
 no arguments are given, or it is a decompression pipe if <tt>zpipe -d</tt> is used.  If any other
 arguments are provided, no compression or decompression is performed.  Instead a usage
-message is displayed.  Examples are <tt>zpipe < foo.txt > foo.txt.z</tt> to compress, and
-<tt>zpipe -d < foo.txt.z > foo.txt</tt> to decompress.
-<pre><b>
+message is displayed.  Examples are <kbd>zpipe &lt; foo.txt &gt; foo.txt.z</kbd> to compress, and
+<kbd>zpipe -d &lt; foo.txt.z &gt; foo.txt</kbd> to decompress.
+<pre><code class="language-c"><b>
 /* compress or decompress from stdin to stdout */
 int main(int argc, char **argv)
 {
@@ -538,8 +537,8 @@ int main(int argc, char **argv)
         return 1;
     }
 }
-</b></pre>
+</b></code></pre>
 <hr>
-<i>Copyright (c) 2004, 2005 by Mark Adler<br>Last modified 11 December 2005</i>
+<i>Copyright (c) 2004, 2005 by Mark Adler<br />Last modified 11 December 2005</i>
 </body>
 </html>
