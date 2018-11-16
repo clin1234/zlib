@@ -1755,6 +1755,22 @@ extern unsigned long crc32_combine (uLong crc1, uLong crc2, z_off_t len2);
    len2.
 */
 
+/*
+ZEXTERN void ZEXPORT crc32_combine_gen OF((z_crc_t op[32], z_off_t len2));
+
+     Generate the operator op corresponding to length len2, to be used with
+   crc32_combine_op(). op must have room for 32 z_crc_t values. (32 is the
+   number of bits in the CRC.)
+*/
+
+extern unsigned long crc32_combine_op (unsigned long crc1, unsigned long crc2,
+                                           const z_crc_t *op);
+/*
+     Give the same result as crc32_combine(), using op in place of len2. op is
+   is generated from len2 by crc32_combine_gen(). This will be faster than
+   crc32_combine() if the generated op is used many times.
+*/
+
 
                         /* various hacks, don't look :) */
 
@@ -1842,6 +1858,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern z_off64_t   gzoffset64(gzFile);
    extern unsigned long   adler32_combine64(uLong, uLong, z_off64_t);
    extern unsigned long   crc32_combine64(uLong, uLong, z_off64_t);
+   extern void crc32_combine_gen64 (z_crc_t *op, z_off64_t);
 #endif
 
 #if !defined(ZLIB_INTERNAL) && defined(Z_WANT64)
@@ -1852,6 +1869,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
 #    define z_gzoffset z_gzoffset64
 #    define z_adler32_combine z_adler32_combine64
 #    define z_crc32_combine z_crc32_combine64
+#    define z_crc32_combine_gen z_crc32_combine64_gen
 #  else
 #    define gzopen gzopen64
 #    define gzseek gzseek64
@@ -1859,6 +1877,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
 #    define gzoffset gzoffset64
 #    define adler32_combine adler32_combine64
 #    define crc32_combine crc32_combine64
+#    define crc32_combine_gen crc32_combine_gen64
 #  endif
 #  ifndef Z_LARGE64
      extern gzFile   gzopen64 (const char *, const char *);
@@ -1867,6 +1886,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
      extern z_off_t   gzoffset64 (gzFile);
      extern unsigned long   adler32_combine64 (uLong, uLong, z_off_t);
      extern unsigned long   crc32_combine64 (uLong, uLong, z_off_t);
+     extern void crc32_combine_gen64 (z_crc_t *op, z_off64_t);
 #  endif
 #else
    extern gzFile   gzopen (const char *, const char *);
@@ -1875,12 +1895,14 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern z_off_t   gzoffset (gzFile);
    extern unsigned long   adler32_combine(uLong, uLong, z_off_t);
    extern unsigned long   crc32_combine (uLong, uLong, z_off_t);
+   extern void crc32_combine_gen (z_crc_t *op, z_off64_t);
 #endif
 
 #else /* Z_SOLO */
 
   extern unsigned long adler32_combine (unsigned long, unsigned long, z_off_t);
   extern unsigned long crc32_combine (unsigned long, unsigned long, z_off_t);
+  extern void crc32_combine_gen (z_crc_t *op, z_off64_t);
 
 #endif /* !Z_SOLO */
 
