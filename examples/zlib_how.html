@@ -170,7 +170,7 @@ the error.  We wouldn't want a memory leak, now would we?  <tt>deflateEnd()</tt>
 at any time after the state has been initialized.  Once that's done, <tt>deflateInit()</tt> (or
 <tt>deflateInit2()</tt>) would have to be called to start a new compression process.  There is
 no point here in checking the <tt>deflateEnd()</tt> return code.  The deallocation can't fail.
-<pre><b>
+<pre><code class="language-c"><b>
         strm.avail_in = fread(in, 1, CHUNK, source);
         if (ferror(source)) {
             (void)deflateEnd(&amp;strm);
@@ -178,22 +178,22 @@ no point here in checking the <tt>deflateEnd()</tt> return code.  The deallocati
         }
         flush = feof(source) ? Z_FINISH : Z_NO_FLUSH;
         strm.next_in = in;
-</b></pre><!-- -->
+</b></code></pre>
 The inner <tt>do</tt>-loop passes our chunk of input data to <tt>deflate()</tt>, and then
 keeps calling <tt>deflate()</tt> until it is done producing output.  Once there is no more
 new output, <tt>deflate()</tt> is guaranteed to have consumed all of the input, i.e.,
 <tt>avail_in</tt> will be zero.
-<pre><b>
+<pre><code class="language-c"><b>
         /* run deflate() on input until output buffer not full, finish
            compression if all of source has been read in */
         do {
-</b></pre>
+</b></code></pre>
 Output space is provided to <tt>deflate()</tt> by setting <tt>avail_out</tt> to the number
 of available output bytes and <tt>next_out</tt> to a pointer to that space.
-<pre><b>
+<pre><code class="language-c"><b>
             strm.avail_out = CHUNK;
             strm.next_out = out;
-</b></pre>
+</b></code></pre>
 Now we call the compression engine itself, <tt>deflate()</tt>.  It takes as many of the
 <tt>avail_in</tt> bytes at <tt>next_in</tt> as it can process, and writes as many as
 <tt>avail_out</tt> bytes to <tt>next_out</tt>.  Those counters and pointers are then
@@ -241,22 +241,22 @@ other part of the application inadvertently clobbered the memory containing the 
 suffice it to say that this is simply an indication that <tt>deflate()</tt> could not consume
 more input or produce more output.  <tt>deflate()</tt> can be called again with more output space
 or more available input, which it will be in this code.
-<pre><b>
+<pre><code class="language-c"><b>
             ret = deflate(&amp;strm, flush);    /* no bad return value */
             assert(ret != Z_STREAM_ERROR);  /* state not clobbered */
-</b></pre>
+</b></code></pre>
 Now we compute how much output <tt>deflate()</tt> provided on the last call, which is the
 difference between how much space was provided before the call, and how much output space
 is still available after the call.  Then that data, if any, is written to the output file.
 We can then reuse the output buffer for the next call of <tt>deflate()</tt>.  Again if there
 is a file i/o error, we call <tt>deflateEnd()</tt> before returning to avoid a memory leak.
-<pre><b>
+<pre><code class="language-c"><b>
             have = CHUNK - strm.avail_out;
             if (fwrite(out, 1, have, dest) != have || ferror(dest)) {
                 (void)deflateEnd(&amp;strm);
                 return Z_ERRNO;
             }
-</b></pre>
+</b></code></pre>
 The inner <tt>do</tt>-loop is repeated until the last <tt>deflate()</tt> call fails to fill the
 provided output buffer.  Then we know that <tt>deflate()</tt> has done as much as it can with
 the provided input, and that all of that input has been consumed.  We can then fall out of this
@@ -285,35 +285,35 @@ without flushing and feed all of the data to <tt>deflate()</tt>.  The second loo
 <tt>deflate()</tt> with no more
 data and the <tt>Z_FINISH</tt> parameter to complete the process.  As you can see from this
 example, that can be avoided by simply keeping track of the current flush state.
-<pre><b>
+<pre><code class="language-c"><b>
         } while (strm.avail_out == 0);
         assert(strm.avail_in == 0);     /* all input will be used */
-</b></pre><!-- -->
+</b></code></pre>
 Now we check to see if we have already processed all of the input file.  That information was
 saved in the <tt>flush</tt> variable, so we see if that was set to <tt>Z_FINISH</tt>.  If so,
 then we're done and we fall out of the outer loop.  We're guaranteed to get <tt>Z_STREAM_END</tt>
 from the last <tt>deflate()</tt> call, since we ran it until the last chunk of input was
 consumed and all of the output was generated.
-<pre><b>
+<pre><code class="language-c"><b>
         /* done when last data in file processed */
     } while (flush != Z_FINISH);
     assert(ret == Z_STREAM_END);        /* stream will be complete */
-</b></pre><!-- -->
+</b></code></pre>
 The process is complete, but we still need to deallocate the state to avoid a memory leak
 (or rather more like a memory hemorrhage if you didn't do this).  Then
 finally we can return with a happy return value.
-<pre><b>
+<pre><code class="language-c"><b>
     /* clean up and return */
     (void)deflateEnd(&amp;strm);
     return Z_OK;
 }
-</b></pre><!-- -->
+</b></code></pre>
 Now we do the same thing for decompression in the <tt>inf()</tt> routine. <tt>inf()</tt>
 decompresses what is hopefully a valid <em>zlib</em> stream from the input file and writes the
 uncompressed data to the output file.  Much of the discussion above for <tt>def()</tt>
 applies to <tt>inf()</tt> as well, so the discussion here will focus on the differences between
 the two.
-<pre><b>
+<pre><code class="language-c"><b>
 /* Decompress from file source to file dest until stream ends or EOF.
    inf() returns Z_OK on success, Z_MEM_ERROR if memory could not be
    allocated for processing, Z_DATA_ERROR if the deflate data is
@@ -322,17 +322,17 @@ the two.
    is an error reading or writing the files. */
 int inf(FILE *source, FILE *dest)
 {
-</b></pre>
+</b></code></pre>
 The local variables have the same functionality as they do for <tt>def()</tt>.  The
 only difference is that there is no <tt>flush</tt> variable, since <tt>inflate()</tt>
 can tell from the <em>zlib</em> stream itself when the stream is complete.
-<pre><b>
+<pre><code class="language-c"><b>
     int ret;
     unsigned have;
     z_stream strm;
     unsigned char in[CHUNK];
     unsigned char out[CHUNK];
-</b></pre><!-- -->
+</b></code></pre>
 The initialization of the state is the same, except that there is no compression level,
 of course, and two more elements of the structure are initialized.  <tt>avail_in</tt>
 and <tt>next_in</tt> must be initialized before calling <tt>inflateInit()</tt>.  This
@@ -347,7 +347,7 @@ In any case, no decompression is performed by <tt>inflateInit()</tt>, so the
 <p>
 Here <tt>avail_in</tt> is set to zero and <tt>next_in</tt> is set to <tt>Z_NULL</tt> to
 indicate that no input data is being provided.
-<pre><b>
+<pre><code class="langauge-c"><b>
     /* allocate inflate state */
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -357,7 +357,7 @@ indicate that no input data is being provided.
     ret = inflateInit(&amp;strm);
     if (ret != Z_OK)
         return ret;
-</b></pre><!-- -->
+</b></code></pre>
 The outer <tt>do</tt>-loop decompresses input until <tt>inflate()</tt> indicates
 that it has reached the end of the compressed data and has produced all of the uncompressed
 output.  This is in contrast to <tt>def()</tt> which processes all of the input file.

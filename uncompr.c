@@ -46,7 +46,7 @@ int uncompress2 (
         dest = buf;
     }
 
-    stream.next_in = (const unsigned char *)source;
+    stream.next_in = source;
     stream.avail_in = 0;
     stream.zalloc = (alloc_func)0;
     stream.zfree = (free_func)0;
