@@ -1763,8 +1763,13 @@ ZEXTERN void ZEXPORT crc32_combine_gen OF((z_crc_t op[32], z_off_t len2));
    number of bits in the CRC.)
 */
 
+<<<<<<< HEAD
 extern unsigned long crc32_combine_op (unsigned long crc1, unsigned long crc2,
                                            const z_crc_t *op);
+=======
+ZEXTERN uLong ZEXPORT crc32_combine_op OF((uLong crc1, uLong crc2,
+                                           const z_crc_t *op));
+>>>>>>> develop
 /*
      Give the same result as crc32_combine(), using op in place of len2. op is
    is generated from len2 by crc32_combine_gen(). This will be faster than
@@ -1852,6 +1857,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
  * without large file support, _LFS64_LARGEFILE must also be true
  */
 #ifdef Z_LARGE64
+<<<<<<< HEAD
    extern gzFile   gzopen64(const char *, const char *);
    extern z_off64_t   gzseek64(gzFile, z_off64_t, int);
    extern z_off64_t   gztell64(gzFile);
@@ -1859,6 +1865,15 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern unsigned long   adler32_combine64(uLong, uLong, z_off64_t);
    extern unsigned long   crc32_combine64(uLong, uLong, z_off64_t);
    extern void crc32_combine_gen64 (z_crc_t *op, z_off64_t);
+=======
+   ZEXTERN gzFile ZEXPORT gzopen64 OF((const char *, const char *));
+   ZEXTERN z_off64_t ZEXPORT gzseek64 OF((gzFile, z_off64_t, int));
+   ZEXTERN z_off64_t ZEXPORT gztell64 OF((gzFile));
+   ZEXTERN z_off64_t ZEXPORT gzoffset64 OF((gzFile));
+   ZEXTERN uLong ZEXPORT adler32_combine64 OF((uLong, uLong, z_off64_t));
+   ZEXTERN uLong ZEXPORT crc32_combine64 OF((uLong, uLong, z_off64_t));
+   ZEXTERN void ZEXPORT crc32_combine_gen64 OF((z_crc_t *op, z_off64_t));
+>>>>>>> develop
 #endif
 
 #if !defined(ZLIB_INTERNAL) && defined(Z_WANT64)
@@ -1880,6 +1895,7 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
 #    define crc32_combine_gen crc32_combine_gen64
 #  endif
 #  ifndef Z_LARGE64
+<<<<<<< HEAD
      extern gzFile   gzopen64 (const char *, const char *);
      extern z_off_t   gzseek64 (gzFile, z_off_t, int);
      extern z_off_t   gztell64 (gzFile);
@@ -1896,13 +1912,37 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern unsigned long   adler32_combine(uLong, uLong, z_off_t);
    extern unsigned long   crc32_combine (uLong, uLong, z_off_t);
    extern void crc32_combine_gen (z_crc_t *op, z_off64_t);
+=======
+     ZEXTERN gzFile ZEXPORT gzopen64 OF((const char *, const char *));
+     ZEXTERN z_off_t ZEXPORT gzseek64 OF((gzFile, z_off_t, int));
+     ZEXTERN z_off_t ZEXPORT gztell64 OF((gzFile));
+     ZEXTERN z_off_t ZEXPORT gzoffset64 OF((gzFile));
+     ZEXTERN uLong ZEXPORT adler32_combine64 OF((uLong, uLong, z_off_t));
+     ZEXTERN uLong ZEXPORT crc32_combine64 OF((uLong, uLong, z_off_t));
+     ZEXTERN void ZEXPORT crc32_combine_gen64 OF((z_crc_t *op, z_off_t));
+#  endif
+#else
+   ZEXTERN gzFile ZEXPORT gzopen OF((const char *, const char *));
+   ZEXTERN z_off_t ZEXPORT gzseek OF((gzFile, z_off_t, int));
+   ZEXTERN z_off_t ZEXPORT gztell OF((gzFile));
+   ZEXTERN z_off_t ZEXPORT gzoffset OF((gzFile));
+   ZEXTERN uLong ZEXPORT adler32_combine OF((uLong, uLong, z_off_t));
+   ZEXTERN uLong ZEXPORT crc32_combine OF((uLong, uLong, z_off_t));
+   ZEXTERN void ZEXPORT crc32_combine_gen OF((z_crc_t *op, z_off_t));
+>>>>>>> develop
 #endif
 
 #else /* Z_SOLO */
 
+<<<<<<< HEAD
   extern unsigned long adler32_combine (unsigned long, unsigned long, z_off_t);
   extern unsigned long crc32_combine (unsigned long, unsigned long, z_off_t);
   extern void crc32_combine_gen (z_crc_t *op, z_off64_t);
+=======
+   ZEXTERN uLong ZEXPORT adler32_combine OF((uLong, uLong, z_off_t));
+   ZEXTERN uLong ZEXPORT crc32_combine OF((uLong, uLong, z_off_t));
+   ZEXTERN void ZEXPORT crc32_combine_gen OF((z_crc_t *op, z_off_t));
+>>>>>>> develop
 
 #endif /* !Z_SOLO */
 
