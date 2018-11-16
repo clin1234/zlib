@@ -47,21 +47,15 @@
 #endif /* BYFOUR */
 
 /* Local functions for crc concatenation */
-<<<<<<< HEAD
-local unsigned long gf2_matrix_times OF((unsigned long *mat,
-                                         unsigned long vec));
-local void gf2_matrix_square OF((unsigned long *square, unsigned long *mat));
-local unsigned long crc32_combine_ OF((unsigned long crc1, uLong crc2, z_off64_t len2));
-=======
 #define GF2_DIM 32      /* dimension of GF(2) vectors (length of CRC) */
-local z_crc_t gf2_matrix_times OF((const z_crc_t *mat, z_crc_t vec));
-local uLong crc32_combine_ OF((uLong crc1, uLong crc2, z_off64_t len2));
-local void crc32_combine_gen_ OF((z_crc_t *op, z_off64_t len2));
+local z_crc_t gf2_matrix_times (const z_crc_t *mat, z_crc_t vec);
+local unsigned long crc32_combine_ (unsigned long crc1, unsigned long crc2, z_off64_t len2);
+local void crc32_combine_gen_ (z_crc_t *op, z_off64_t len2);
 
 /* ========================================================================= */
-local z_crc_t gf2_matrix_times(mat, vec)
-    const z_crc_t *mat;
-    z_crc_t vec;
+local z_crc_t gf2_matrix_times(
+    const z_crc_t *mat,
+    z_crc_t vec)
 {
     z_crc_t sum;
 
@@ -74,7 +68,6 @@ local z_crc_t gf2_matrix_times(mat, vec)
     }
     return sum;
 }
->>>>>>> develop
 
 
 #ifdef DYNAMIC_CRC_TABLE
@@ -445,33 +438,27 @@ local uLong crc32_combine_(crc1, crc2, len2)
 }
 
 /* ========================================================================= */
-uLong ZEXPORT crc32_combine(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
+unsigned long crc32_combine(crc1, crc2, len2)
+    unsigned long crc1;
+    unsigned long crc2;
     z_off_t len2;
 {
     return crc32_combine_(crc1, crc2, len2);
 }
 
-<<<<<<< HEAD
 /* ========================================================================= */
-local unsigned long crc32_combine_(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
-=======
-uLong ZEXPORT crc32_combine64(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
->>>>>>> develop
-    z_off64_t len2;
+unsigned long crc32_combine64(
+    unsigned long crc1,
+    unsigned long crc2,
+    z_off64_t len2)
 {
     return crc32_combine_(crc1, crc2, len2);
 }
 
 /* ========================================================================= */
-local void crc32_combine_gen_(op, len2)
-    z_crc_t *op;
-    z_off64_t len2;
+local void crc32_combine_gen_(
+    z_crc_t *op,
+    z_off64_t len2)
 {
     z_crc_t row;
     int j;
@@ -518,51 +505,25 @@ local void crc32_combine_gen_(op, len2)
     }
 }
 
-/* ========================================================================= */
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-unsigned long crc32_combine(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
-=======
-unsigned long crc32_combine(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
->>>>>>> Stashed changes
-=======
-void ZEXPORT crc32_combine_gen(op, len2)
-    z_crc_t *op;
->>>>>>> develop
-    z_off_t len2;
+void crc32_combine_gen(
+    z_crc_t *op,
+    z_off_t len2)
 {
     crc32_combine_gen_(op, len2);
 }
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-unsigned long crc32_combine64(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
-=======
-unsigned long crc32_combine64(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
->>>>>>> Stashed changes
-    z_off64_t len2;
-=======
-void ZEXPORT crc32_combine_gen64(op, len2)
-    z_crc_t *op;
-    z_off64_t len2;
+void crc32_combine_gen64(
+    z_crc_t *op,
+    z_off64_t len2)
 {
     crc32_combine_gen_(op, len2);
 }
 
 /* ========================================================================= */
-uLong crc32_combine_op(crc1, crc2, op)
-    uLong crc1;
-    uLong crc2;
-    const z_crc_t *op;
->>>>>>> develop
+uLong crc32_combine_op(
+    unsigned long crc1,
+    unsigned long crc2,
+    const z_crc_t *op)
 {
     return gf2_matrix_times(op, crc1) ^ crc2;
 }
