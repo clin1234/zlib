@@ -17,12 +17,12 @@
    window is a user-supplied window and output buffer that is 64K bytes.
  */
 int inflateBack9Init_(strm, window, version, stream_size)
-z_stream FAR *strm;
-unsigned char FAR *window;
+z_stream *strm;
+unsigned char *window;
 const char *version;
 int stream_size;
 {
-    struct inflate_state FAR *state;
+    struct inflate_state *state;
 
     if (version == Z_NULL || version[0] != ZLIB_VERSION[0] ||
         stream_size != (int)(sizeof(z_stream)))
@@ -32,14 +32,14 @@ int stream_size;
     strm->msg = Z_NULL;                 /* in case we return an error */
     if (strm->zalloc == (alloc_func)0) {
         strm->zalloc = zcalloc;
-        strm->opaque = (voidpf)0;
+        strm->opaque = (void*)0;
     }
     if (strm->zfree == (free_func)0) strm->zfree = zcfree;
-    state = (struct inflate_state FAR *)ZALLOC(strm, 1,
+    state = (struct inflate_state *)ZALLOC(strm, 1,
                                                sizeof(struct inflate_state));
     if (state == Z_NULL) return Z_MEM_ERROR;
     Tracev((stderr, "inflate: allocated\n"));
-    strm->state = (voidpf)state;
+    strm->state = (void*)state;
     state->window = window;
     return Z_OK;
 }
@@ -215,30 +215,30 @@ void makefixed9(void)
    are not correct, i.e. strm is Z_NULL or the state was not initialized.
  */
 int inflateBack9(strm, in, in_desc, out, out_desc)
-z_stream FAR *strm;
+z_stream *strm;
 in_func in;
-void FAR *in_desc;
+void *in_desc;
 out_func out;
-void FAR *out_desc;
+void *out_desc;
 {
-    struct inflate_state FAR *state;
-    const unsigned char FAR *next;    /* next input */
-    unsigned char FAR *put;     /* next output */
+    struct inflate_state *state;
+    const unsigned char *next;    /* next input */
+    unsigned char *put;     /* next output */
     unsigned have;              /* available input */
     unsigned long left;         /* available output */
     inflate_mode mode;          /* current inflate mode */
     int lastblock;              /* true if processing last block */
     int wrap;                   /* true if the window has wrapped */
-    unsigned char FAR *window;  /* allocated sliding window, if needed */
+    unsigned char *window;  /* allocated sliding window, if needed */
     unsigned long hold;         /* bit buffer */
     unsigned bits;              /* bits in bit buffer */
     unsigned extra;             /* extra bits needed */
     unsigned long length;       /* literal or length of data to copy */
     unsigned long offset;       /* distance back to copy string from */
     unsigned long copy;         /* number of stored or match bytes to copy */
-    unsigned char FAR *from;    /* where to copy match bytes from */
-    code const FAR *lencode;    /* starting table for length/literal codes */
-    code const FAR *distcode;   /* starting table for distance codes */
+    unsigned char *from;    /* where to copy match bytes from */
+    code const *lencode;    /* starting table for length/literal codes */
+    code const *distcode;   /* starting table for distance codes */
     unsigned lenbits;           /* index bits for lencode */
     unsigned distbits;          /* index bits for distcode */
     code here;                  /* current decoding table entry */
@@ -252,7 +252,7 @@ void FAR *out_desc;
     /* Check that the strm exists and that the state was initialized */
     if (strm == Z_NULL || strm->state == Z_NULL)
         return Z_STREAM_ERROR;
-    state = (struct inflate_state FAR *)strm->state;
+    state = (struct inflate_state *)strm->state;
 
     /* Reset the state */
     strm->msg = Z_NULL;
@@ -367,7 +367,7 @@ void FAR *out_desc;
             while (state->have < 19)
                 state->lens[order[state->have++]] = 0;
             state->next = state->codes;
-            lencode = (code const FAR *)(state->next);
+            lencode = (code const *)(state->next);
             lenbits = 7;
             ret = inflate_table9(CODES, state->lens, 19, &(state->next),
                                 &(lenbits), state->work);
@@ -442,7 +442,7 @@ void FAR *out_desc;
                values here (9 and 6) without reading the comments in inftree9.h
                concerning the ENOUGH constants, which depend on those values */
             state->next = state->codes;
-            lencode = (code const FAR *)(state->next);
+            lencode = (code const *)(state->next);
             lenbits = 9;
             ret = inflate_table9(LENS, state->lens, state->nlen,
                             &(state->next), &(lenbits), state->work);
@@ -451,7 +451,7 @@ void FAR *out_desc;
                 mode = BAD;
                 break;
             }
-            distcode = (code const FAR *)(state->next);
+            distcode = (code const *)(state->next);
             distbits = 6;
             ret = inflate_table9(DISTS, state->lens + state->nlen,
                             state->ndist, &(state->next), &(distbits),
@@ -604,7 +604,7 @@ void FAR *out_desc;
 }
 
 int inflateBack9End(strm)
-z_stream FAR *strm;
+z_stream *strm;
 {
     if (strm == Z_NULL || strm->state == Z_NULL || strm->zfree == (free_func)0)
         return Z_STREAM_ERROR;

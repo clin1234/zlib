@@ -1515,8 +1515,8 @@ z_streamp source;
     }
 
     /* copy state */
-    zmemcpy((void*)dest, (voidpf)source, sizeof(z_stream));
-    zmemcpy((void*)copy, (voidpf)state, sizeof(struct inflate_state));
+    memcpy((void*)dest, (void*)source, sizeof(z_stream));
+    memcpy((void*)copy, (void*)state, sizeof(struct inflate_state));
     copy->strm = dest;
     if (state->lencode >= state->codes &&
         state->lencode <= state->codes + ENOUGH - 1) {

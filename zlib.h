@@ -83,11 +83,11 @@ typedef void   (*free_func)  (void* opaque, void* address);
 struct internal_state;
 
 typedef struct z_stream_s {
-    const Byte* next_in;     /* next input byte */
+    const unsigned char* next_in;     /* next input byte */
     unsigned     avail_in;  /* number of bytes available at next_in */
     unsigned long    total_in;  /* total number of input bytes read so far */
 
-    Byte* next_out; /* next output byte will go here */
+    unsigned char* next_out; /* next output byte will go here */
     unsigned avail_out; /* remaining free space at next_out */
     unsigned long total_out; /* total number of bytes output so far */
 
@@ -1175,8 +1175,8 @@ extern unsigned long zlibCompileFlags (void);
 
     Type sizes, two bits each, 00 = 16 bits, 01 = 32, 10 = 64, 11 = other:
      1.0: size of unsigned
-     3.2: size of uLong
-     5.4: size of voidpf (pointer)
+     3.2: size of unsigned long
+     5.4: size of void* (pointer)
      7.6: size of z_off_t
 
     Compiler, assembler, and debug options:
@@ -1223,7 +1223,7 @@ extern unsigned long zlibCompileFlags (void);
    you need special options.
 */
 
-extern int compress(unsigned char *dest, uLong* destLen,
+extern int compress(unsigned char *dest, unsigned long* destLen,
  const unsigned char *source, unsigned long sourceLen);
 /*
      Compresses the source buffer into the destination buffer.  sourceLen is
@@ -1253,7 +1253,7 @@ extern int compress2(unsigned char *dest, unsigned long *destLen,
    Z_STREAM_ERROR if the level parameter is invalid.
 */
 
-extern unsigned long compressBound (uLong sourceLen);
+extern unsigned long compressBound (unsigned long sourceLen);
 /*
      compressBound() returns an upper bound on the compressed size after
    compress() or compress2() on sourceLen bytes.  It would be used before a
@@ -1710,7 +1710,7 @@ extern unsigned long   adler32_z(unsigned long adler, const unsigned char *buf,
 */
 
 /*
-extern unsigned long adler32_combine (uLong adler1, uLong adler2,
+extern unsigned long adler32_combine (unsigned long adler1, unsigned long adler2,
                                           z_off_t len2);
 
      Combine two Adler-32 checksums into one.  For two sequences of bytes, seq1
@@ -1746,7 +1746,7 @@ extern unsigned long crc32_z (unsigned long crc, const unsigned char *buf,
 */
 
 /*
-extern unsigned long crc32_combine (uLong crc1, uLong crc2, z_off_t len2);
+extern unsigned long crc32_combine (unsigned long crc1, unsigned long crc2, z_off_t len2);
 
      Combine two CRC-32 check values into one.  For two sequences of bytes,
    seq1 and seq2 with lengths len1 and len2, CRC-32 check values were
@@ -1756,7 +1756,7 @@ extern unsigned long crc32_combine (uLong crc1, uLong crc2, z_off_t len2);
 */
 
 /*
-ZEXTERN void ZEXPORT crc32_combine_gen OF((z_crc_t op[32], z_off_t len2));
+ZEXTERN void ZEXPORT crc32_combine_gen (z_crc_t op[32], z_off_t len2));
 
      Generate the operator op corresponding to length len2, to be used with
    crc32_combine_op(). op must have room for 32 z_crc_t values. (32 is the
@@ -1856,8 +1856,8 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern z_off64_t   gzseek64(gzFile, z_off64_t, int);
    extern z_off64_t   gztell64(gzFile);
    extern z_off64_t   gzoffset64(gzFile);
-   extern unsigned long   adler32_combine64(uLong, uLong, z_off64_t);
-   extern unsigned long   crc32_combine64(uLong, uLong, z_off64_t);
+   extern unsigned long   adler32_combine64(unsigned long, unsigned long, z_off64_t);
+   extern unsigned long   crc32_combine64(unsigned long, unsigned long, z_off64_t);
    extern void crc32_combine_gen64 (z_crc_t *op, z_off64_t);
 #endif
 
@@ -1884,8 +1884,8 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
      extern z_off_t   gzseek64 (gzFile, z_off_t, int);
      extern z_off_t   gztell64 (gzFile);
      extern z_off_t   gzoffset64 (gzFile);
-     extern unsigned long   adler32_combine64 (uLong, uLong, z_off_t);
-     extern unsigned long   crc32_combine64 (uLong, uLong, z_off_t);
+     extern unsigned long   adler32_combine64 (unsigned long, unsigned long, z_off_t);
+     extern unsigned long   crc32_combine64 (unsigned long, unsigned long, z_off_t);
      extern void crc32_combine_gen64 (z_crc_t *op, z_off64_t);
 #  endif
 #else
@@ -1893,8 +1893,8 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
    extern z_off_t   gzseek (gzFile, z_off_t, int);
    extern z_off_t   gztell (gzFile);
    extern z_off_t   gzoffset (gzFile);
-   extern unsigned long   adler32_combine(uLong, uLong, z_off_t);
-   extern unsigned long   crc32_combine (uLong, uLong, z_off_t);
+   extern unsigned long   adler32_combine(unsigned long, unsigned long, z_off_t);
+   extern unsigned long   crc32_combine (unsigned long, unsigned long, z_off_t);
    extern void crc32_combine_gen (z_crc_t *op, z_off64_t);
 #endif
 
@@ -1921,15 +1921,10 @@ extern gzFile           gzopen_w(const wchar_t *path,
 #endif
 #if defined(STDC) || defined(Z_HAVE_STDARG_H)
 #  ifndef Z_SOLO
-extern int             gzvprintf Z_ARG((gzFile file,
-                                                  const char *format,
-                                                  va_list va);
+extern int gzvprintf(gzFile file, const char *format, va_list va);
 #  endif
 #endif
 
 #ifdef __cplusplus
 }
-#endif
-
-#endif /* ZLIB_H */
 #endif

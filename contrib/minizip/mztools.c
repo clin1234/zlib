@@ -31,8 +31,8 @@ extern int unzRepair(file, fileOut, fileOutTmp, nRecovered, bytesRecovered)
 const char* file;
 const char* fileOut;
 const char* fileOutTmp;
-uLong* nRecovered;
-uLong* bytesRecovered;
+unsigned long* nRecovered;
+unsigned long* bytesRecovered;
 {
   int err = Z_OK;
   FILE* fpZip = fopen(file, "rb");
@@ -40,7 +40,7 @@ uLong* bytesRecovered;
   FILE* fpOutCD = fopen(fileOutTmp, "wb");
   if (fpZip != NULL &&  fpOut != NULL) {
     int entries = 0;
-    uLong totalBytes = 0;
+    unsigned long totalBytes = 0;
     char header[30];
     char filename[1024];
     char extra[1024];

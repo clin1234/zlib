@@ -102,25 +102,25 @@ struct attr_item
 
 enum { TGZ_EXTRACT, TGZ_LIST, TGZ_INVALID };
 
-char *TGZfname          OF((const char *));
-void TGZnotfound        OF((const char *));
+char *TGZfname          (const char *);
+void TGZnotfound        (const char *);
 
-int getoct              OF((char *, int));
-char *strtime           OF((time_t *));
-int setfiletime         OF((char *, time_t));
-void push_attr          OF((struct attr_item **, char *, int, time_t));
-void restore_attr       OF((struct attr_item **));
+int getoct              (char *, int);
+char *strtime           (time_t *);
+int setfiletime         (char *, time_t);
+void push_attr          (struct attr_item **, char *, int, time_t);
+void restore_attr       (struct attr_item **);
 
-int ExprMatch           OF((char *, char *));
+int ExprMatch           (char *, char *);
 
-int makedir             OF((char *));
-int matchname           OF((int, int, char **, char *));
+int makedir             (char *);
+int matchname           (int, int, char **, char *);
 
-void error              OF((const char *));
-int tar                 OF((gzFile, int, int, int, char **));
+void error              (const char *);
+int tar                 (gzFile, int, int, int, char **);
 
-void help               OF((int));
-int main                OF((int, char **));
+void help               (int);
+int main                (int, char **);
 
 char *prog;
 

@@ -97,15 +97,15 @@ typedef unsigned IPos;
  */
 
 typedef struct internal_state {
-    z_streamp strm;      /* pointer back to this zlib stream */
+    z_stream* strm;      /* pointer back to this zlib stream */
     int   status;        /* as the name implies */
     unsigned char *pending_buf;  /* output still pending */
-    ulg   pending_buf_size; /* size of pending_buf */
+    unsigned long   pending_buf_size; /* size of pending_buf */
     unsigned char *pending_out;  /* next pending byte to output to the stream */
-    ulg   pending;       /* nb of bytes in the pending buffer */
+    unsigned long   pending;       /* nb of bytes in the pending buffer */
     int   wrap;          /* bit 0 true for zlib, bit 1 true for gzip */
     gz_header* gzhead;  /* gzip header information to write */
-    ulg   gzindex;       /* where in extra, name, or comment */
+    unsigned long   gzindex;       /* where in extra, name, or comment */
     unsigned char  method;        /* can only be DEFLATED */
     int   last_flush;    /* value of flush param for previous deflate call */
 
@@ -125,7 +125,7 @@ typedef struct internal_state {
      * To do: use the user input buffer as sliding window.
      */
 
-    ulg window_size;
+    unsigned long window_size;
     /* Actual size of window: 2*wSize, except when the user input buffer
      * is directly used as sliding window.
      */
@@ -213,11 +213,11 @@ typedef struct internal_state {
      * The same heap array is used to build all trees.
      */
 
-    uch depth[2*L_CODES+1];
+    unsigned char depth[2*L_CODES+1];
     /* Depth of each subtree used as tie breaker for trees of equal frequency
      */
 
-    uch* sym_buf;        /* buffer for distances and literals/lengths */
+    unsigned char* sym_buf;        /* buffer for distances and literals/lengths */
 
     unsigned  lit_bufsize;
     /* Size of match buffer for literals/lengths.  There are 4 reasons for
@@ -242,14 +242,14 @@ typedef struct internal_state {
     unsigned sym_next;      /* running index in sym_buf */
     unsigned sym_end;       /* symbol table full when sym_next reaches this */
 
-    ulg opt_len;        /* bit length of current block with optimal trees */
-    ulg static_len;     /* bit length of current block with static trees */
+    unsigned long opt_len;        /* bit length of current block with optimal trees */
+    unsigned long static_len;     /* bit length of current block with static trees */
     unsigned matches;       /* number of string matches in current block */
     unsigned insert;        /* bytes at end of window left to insert */
 
 #ifdef ZLIB_DEBUG
-    ulg compressed_len; /* total bit length of compressed file mod 2^32 */
-    ulg bits_sent;      /* bit length of compressed data sent mod 2^32 */
+    unsigned long compressed_len; /* total bit length of compressed file mod 2^32 */
+    unsigned long bits_sent;      /* bit length of compressed data sent mod 2^32 */
 #endif
 
     unsigned short bi_buf;
@@ -261,7 +261,7 @@ typedef struct internal_state {
      * are always zero.
      */
 
-    ulg high_water;
+    unsigned long high_water;
     /* High water mark offset in window for initialized bytes -- bytes above
      * this are set to zero in order to avoid memory check warnings when
      * longest match routines access bytes past the input.  This is then
@@ -291,14 +291,14 @@ typedef struct internal_state {
    memory checker errors from longest match routines */
 
         /* in trees.c */
-void ZLIB_INTERNAL _tr_init OF((deflate_state *s));
-int ZLIB_INTERNAL _tr_tally OF((deflate_state *s, unsigned dist, unsigned lc));
-void ZLIB_INTERNAL _tr_flush_block OF((deflate_state *s, char *buf,
-                        ulg stored_len, int last));
-void ZLIB_INTERNAL _tr_flush_bits OF((deflate_state *s));
-void ZLIB_INTERNAL _tr_align OF((deflate_state *s));
-void ZLIB_INTERNAL _tr_stored_block OF((deflate_state *s, char *buf,
-                        ulg stored_len, int last));
+void ZLIB_INTERNAL _tr_init (deflate_state *s));
+int ZLIB_INTERNAL _tr_tally (deflate_state *s, unsigned dist, unsigned lc));
+void ZLIB_INTERNAL _tr_flush_block (deflate_state *s, char *buf,
+                        unsigned long stored_len, int last));
+void ZLIB_INTERNAL _tr_flush_bits (deflate_state *s));
+void ZLIB_INTERNAL _tr_align (deflate_state *s));
+void ZLIB_INTERNAL _tr_stored_block (deflate_state *s, char *buf,
+                        unsigned long stored_len, int last));
 
 #define d_code(dist) \
    ((dist) < 256 ? _dist_code[dist] : _dist_code[256+((dist)>>7)])
@@ -309,17 +309,10 @@ void ZLIB_INTERNAL _tr_stored_block OF((deflate_state *s, char *buf,
 
 #ifndef ZLIB_DEBUG
 /* Inline versions of _tr_tally for speed: */
-
-#if defined(GEN_TREES_H) || !defined(STDC)
-  extern uch ZLIB_INTERNAL _length_code[];
-  extern uch ZLIB_INTERNAL _dist_code[];
-#else
-  extern const uch ZLIB_INTERNAL _length_code[];
-  extern const uch ZLIB_INTERNAL _dist_code[];
-#endif
+extern const unsigned char ZLIB_INTERNAL _length_code[], _dist_code[];
 
 # define _tr_tally_lit(s, c, flush) \
-  { uch cc = (c); \
+  { unsigned char cc = (c); \
     s->sym_buf[s->sym_next++] = 0; \
     s->sym_buf[s->sym_next++] = 0; \
     s->sym_buf[s->sym_next++] = cc; \
@@ -327,7 +320,7 @@ void ZLIB_INTERNAL _tr_stored_block OF((deflate_state *s, char *buf,
     flush = (s->sym_next == s->sym_end); \
    }
 # define _tr_tally_dist(s, distance, length, flush) \
-  { uch len = (uch)(length); \
+  { unsigned char len = (unsigned char)(length); \
     unsigned short dist = (unsigned short)(distance); \
     s->sym_buf[s->sym_next++] = dist; \
     s->sym_buf[s->sym_next++] = dist >> 8; \

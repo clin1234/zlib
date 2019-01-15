@@ -37,10 +37,10 @@
 #  define BYFOUR
 #endif
 #ifdef BYFOUR
-   local unsigned long crc32_little OF((unsigned long,
-                        const unsigned char FAR *, z_size_t));
-   local unsigned long crc32_big OF((unsigned long,
-                        const unsigned char FAR *, z_size_t));
+   local unsigned long crc32_little (unsigned long,
+                        const unsigned char FAR *, z_size_t);
+   local unsigned long crc32_big (unsigned long,
+                        const unsigned char FAR *, z_size_t);
 #  define TBLS 8
 #else
 #  define TBLS 1
@@ -75,16 +75,16 @@ local z_crc_t gf2_matrix_times(
 local volatile int crc_table_empty = 1;
 local z_crc_t FAR crc_table[TBLS][256];
 local z_crc_t FAR crc_comb[GF2_DIM][GF2_DIM];
-local void make_crc_table OF((void));
-local void gf2_matrix_square OF((z_crc_t *square, const z_crc_t *mat));
+local void make_crc_table (void));
+local void gf2_matrix_square (z_crc_t *square, const z_crc_t *mat));
 #ifdef MAKECRCH
-   local void write_table OF((FILE *, const z_crc_t FAR *, int));
+   local void write_table (FILE *, const z_crc_t FAR *, int));
 #endif /* MAKECRCH */
 
 /* ========================================================================= */
-local void gf2_matrix_square(square, mat)
-    z_crc_t *square;
-    const z_crc_t *mat;
+local void gf2_matrix_square(
+    z_crc_t *square,
+    const z_crc_t *mat)
 {
     int n;
 
@@ -118,7 +118,7 @@ local void gf2_matrix_square(square, mat)
   allow for word-at-a-time CRC calculation for both big-endian and little-
   endian machines, where a word is four bytes.
 */
-local void make_crc_table()
+local void make_crc_table(void)
 {
     z_crc_t c;
     int n, k;
@@ -232,10 +232,10 @@ local void make_crc_table()
 }
 
 #ifdef MAKECRCH
-local void write_table(out, table, k)
-    FILE *out;
-    const z_crc_t FAR *table;
-    int k;
+local void write_table(
+    FILE *out,
+    const z_crc_t FAR *table,
+    int k)
 {
     int n;
 
@@ -245,7 +245,7 @@ local void write_table(out, table, k)
                 n == k - 1 ? "\n" : (n % 5 == 4 ? ",\n" : ", "));
 }
 
-int main()
+int main(void)
 {
     make_crc_table();
     return 0;
@@ -263,13 +263,13 @@ int main()
 /* =========================================================================
  * This function can be used by asm versions of crc32()
  */
-const z_crc_t FAR * get_crc_table()
+const z_crc_t * get_crc_table()
 {
 #ifdef DYNAMIC_CRC_TABLE
     if (crc_table_empty)
         make_crc_table();
 #endif /* DYNAMIC_CRC_TABLE */
-    return (const z_crc_t FAR *)crc_table;
+    return (const z_crc_t *)crc_table;
 }
 
 /* ========================================================================= */
@@ -277,10 +277,10 @@ const z_crc_t FAR * get_crc_table()
 #define DO8 DO1; DO1; DO1; DO1; DO1; DO1; DO1; DO1
 
 /* ========================================================================= */
-unsigned long crc32_z(crc, buf, len)
-    unsigned long crc;
-    const unsigned char FAR *buf;
-    z_size_t len;
+unsigned long crc32_z(
+    unsigned long crc,
+    const unsigned char FAR *buf,
+    z_size_t len)
 {
     if (buf == Z_NULL) return 0UL;
 
@@ -381,10 +381,10 @@ local unsigned long crc32_little(crc, buf, len)
 #define DOBIG32 DOBIG4; DOBIG4; DOBIG4; DOBIG4; DOBIG4; DOBIG4; DOBIG4; DOBIG4
 
 /* ========================================================================= */
-local unsigned long crc32_big(crc, buf, len)
-    unsigned long crc;
-    const unsigned char FAR *buf;
-    z_size_t len;
+local unsigned long crc32_big(
+    unsigned long crc,
+    const unsigned char FAR *buf,
+    z_size_t len)
 {
     register z_crc_t c;
     register const z_crc_t FAR *buf4;
@@ -417,10 +417,10 @@ local unsigned long crc32_big(crc, buf, len)
 #endif /* BYFOUR */
 
 /* ========================================================================= */
-local uLong crc32_combine_(crc1, crc2, len2)
-    uLong crc1;
-    uLong crc2;
-    z_off64_t len2;
+local unsigned long crc32_combine_(
+    unsigned long crc1,
+    unsigned long crc2,
+    z_off64_t len2)
 {
     int n;
 
@@ -438,10 +438,10 @@ local uLong crc32_combine_(crc1, crc2, len2)
 }
 
 /* ========================================================================= */
-unsigned long crc32_combine(crc1, crc2, len2)
-    unsigned long crc1;
-    unsigned long crc2;
-    z_off_t len2;
+unsigned long crc32_combine(
+    unsigned long crc1,
+    unsigned long crc2,
+    z_off_t len2)
 {
     return crc32_combine_(crc1, crc2, len2);
 }
@@ -520,7 +520,7 @@ void crc32_combine_gen64(
 }
 
 /* ========================================================================= */
-uLong crc32_combine_op(
+unsigned long crc32_combine_op(
     unsigned long crc1,
     unsigned long crc2,
     const z_crc_t *op)

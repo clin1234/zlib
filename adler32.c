@@ -9,7 +9,7 @@
 #include "zutil.h"
 
 local unsigned long adler32_combine_
-(unsigned long adler1, uLong adler2, z_off64_t len2);
+(unsigned long adler1, unsigned long adler2, z_off64_t len2);
 
 const unsigned BASE 65521; /* largest prime smaller than 65536 */
 const unsigned NMAX 5552;
@@ -26,7 +26,7 @@ const unsigned NMAX 5552;
 #ifdef NO_DIVIDE
 /* note that this assumes BASE is 65521, where 65536 % 65521 == 15
    (thank you to John Reiser for pointing this out) */
-void CHOP(uLong a)
+void CHOP(unsigned long a)
 {
     do {
         unsigned long tmp = a >> 16;
@@ -34,21 +34,21 @@ void CHOP(uLong a)
         a += (tmp << 4) - tmp;
     } while (0);
 }
-void define MOD28(uLong a)
+void define MOD28(unsigned long a)
 {
     do {
         CHOP(a);
         if (a >= BASE) a -= BASE;
     } while (0);
 }
-void MOD(uLong a)
+void MOD(unsigned long a)
 {
     do {
         CHOP(a);
         MOD28(a);
     } while (0);
 }
-void MOD63(uLong a)
+void MOD63(unsigned long a)
 {
     do { /* this assumes a is not negative */
         z_off64_t tmp = a >> 32;

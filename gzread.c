@@ -12,7 +12,7 @@ local int gz_look (gz_state*);
 local int gz_decomp (gz_state*);
 local int gz_fetch (gz_state*);
 local int gz_skip (gz_state*, z_off64_t);
-local z_size_t gz_read (gz_statep, voidp, z_size_t);
+local z_size_t gz_read (gz_statep, void*, z_size_t);
 
 /* Use read() to load a buffer -- return -1 on error, otherwise 0.  Read from
    state->fd, and update state->eof, state->err, and state->msg as appropriate.

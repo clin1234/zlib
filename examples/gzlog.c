@@ -240,7 +240,7 @@
 
 #define local static
 typedef unsigned int uint;
-typedef unsigned long ulong;
+typedef unsigned long unsigned long;
 
 /* Macro for debugging to deterministically force recovery operations */
 #ifdef GZLOG_DEBUG
@@ -276,7 +276,7 @@ typedef unsigned long ulong;
 
 /* macros to extract little-endian integers from an unsigned byte buffer */
 #define PULL2(p) ((p)[0]+((uint)((p)[1])<<8))
-#define PULL4(p) (PULL2(p)+((ulong)PULL2(p+2)<<16))
+#define PULL4(p) (PULL2(p)+((unsigned long)PULL2(p+2)<<16))
 #define PULL8(p) (PULL4(p)+((off_t)PULL4(p+4)<<32))
 
 /* macros to store integers into a byte buffer in little-endian order */
@@ -295,10 +295,10 @@ struct log {
     int back;       /* location of first block id in bits back from first */
     uint stored;    /* bytes currently in last stored block */
     off_t last;     /* offset of last stored block first length byte */
-    ulong ccrc;     /* crc of compressed data */
-    ulong clen;     /* length (modulo 2^32) of compressed data */
-    ulong tcrc;     /* crc of total data */
-    ulong tlen;     /* length (modulo 2^32) of total data */
+    unsigned long ccrc;     /* crc of compressed data */
+    unsigned long clen;     /* length (modulo 2^32) of compressed data */
+    unsigned long tcrc;     /* crc of total data */
+    unsigned long tlen;     /* length (modulo 2^32) of total data */
     time_t lock;    /* last modify time of our lock file */
 };
 

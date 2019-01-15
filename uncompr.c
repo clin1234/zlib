@@ -60,11 +60,11 @@ int uncompress2 (
 
     do {
         if (stream.avail_out == 0) {
-            stream.avail_out = left > (uLong)max ? max : (unsigned)left;
+            stream.avail_out = left > (unsigned long)max ? max : (unsigned)left;
             left -= stream.avail_out;
         }
         if (stream.avail_in == 0) {
-            stream.avail_in = len > (uLong)max ? max : (unsigned)len;
+            stream.avail_in = len > (unsigned long)max ? max : (unsigned)len;
             len -= stream.avail_in;
         }
         err = inflate(&stream, Z_NO_FLUSH);

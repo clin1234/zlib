@@ -206,7 +206,7 @@ class ozstream
         /* Binary write the given number of bytes into the compressed file.
          */
         int write(const void* buf, size_t len) {
-            return ::gzwrite(m_fp, (voidp) buf, len);
+            return ::gzwrite(m_fp, (void*) buf, len);
         }
 
         /* Flushes all pending output into the compressed file. The parameter
@@ -262,7 +262,7 @@ class ozstream
  */
 template <class T, class Items>
 inline int write(ozstream& zs, const T* x, Items items) {
-    return ::gzwrite(zs.fp(), (voidp) x, items*sizeof(T));
+    return ::gzwrite(zs.fp(), (void*) x, items*sizeof(T));
 }
 
 /*
@@ -270,7 +270,7 @@ inline int write(ozstream& zs, const T* x, Items items) {
  */
 template <class T>
 inline ozstream& operator<(ozstream& zs, const T& x) {
-    ::gzwrite(zs.fp(), (voidp) &x, sizeof(T));
+    ::gzwrite(zs.fp(), (void*) &x, sizeof(T));
     return zs;
 }
 
@@ -285,7 +285,7 @@ inline zstringlen::zstringlen(ozstream& zs, const char* x) {
  */
 inline ozstream& operator<(ozstream& zs, const char* x) {
     zstringlen len(zs, x);
-    ::gzwrite(zs.fp(), (voidp) x, len.value());
+    ::gzwrite(zs.fp(), (void*) x, len.value());
     return zs;
 }
 

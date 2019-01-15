@@ -34,25 +34,12 @@
    define "local" for the non-static meaning of "static", for readability
    (compile with -Dlocal if your debugger can't find static symbols) */
 
-/* get errno and strerror definition */
-#if defined UNDER_CE
-#  include <windows.h>
-#  define zstrerror() gz_strwinerror((DWORD)GetLastError())
-#else
-#  ifndef NO_STRERROR
-#    include <errno.h>
-#    define zstrerror() strerror(errno)
-#  else
-#    define zstrerror() "stdio error (consult errno)"
-#  endif
-#endif
-
 /* provide prototypes for these when building zlib without LFS */
 #if !defined(_LARGEFILE64_SOURCE) || _LFS64_LARGEFILE-0 == 0
-    extern gzFile gzopen64 OF((const char *, const char *));
-    extern z_off64_t gzseek64 OF((gzFile, z_off64_t, int));
-    extern z_off64_t gztell64 OF((gzFile));
-    extern z_off64_t gzoffset64 OF((gzFile));
+    extern gzFile gzopen64 (const char *, const char *);
+    extern z_off64_t gzseek64 (gzFile, z_off64_t, int);
+    extern z_off64_t gztell64 (gzFile);
+    extern z_off64_t gzoffset64 (gzFile);
 #endif
 
 /* default memLevel */
@@ -112,7 +99,7 @@ typedef struct {
 } gz_state;
 
 /* shared functions */
-void ZLIB_INTERNAL gz_error (gz_statep, int, const char *);
+void gz_error (gz_state*, int, const char *);
 
 /* GT_OFF(x), where x is an unsigned value, is true if x > maximum z_off64_t
    value -- needed when comparing unsigned to z_off64_t, which is signed
@@ -120,6 +107,6 @@ void ZLIB_INTERNAL gz_error (gz_statep, int, const char *);
 #ifdef INT_MAX
 #  define GT_OFF(x) (sizeof(int) == sizeof(z_off64_t) && (x) > INT_MAX)
 #else
-unsigned ZLIB_INTERNAL gz_intmax (void);
+unsigned gz_intmax (void);
 #  define GT_OFF(x) (sizeof(int) == sizeof(z_off64_t) && (x) > gz_intmax())
 #endif

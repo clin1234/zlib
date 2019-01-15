@@ -60,8 +60,8 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 /* provide prototypes for these when building zlib without LFS */
 #if !defined(_WIN32) && \
     (!defined(_LARGEFILE64_SOURCE) || _LFS64_LARGEFILE-0 == 0)
-    extern uLong adler32_combine64 OF((uLong, uLong, z_off_t));
-    extern uLong crc32_combine64 OF((uLong, uLong, z_off_t));
+    extern unsigned long adler32_combine64 (unsigned long, unsigned long, z_off_t);
+    extern unsigned long crc32_combine64 (unsigned long, unsigned long, z_off_t);
 #endif
 
         /* common defaults */
@@ -92,7 +92,7 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 
 #define ZALLOC(strm, items, size) \
            (*((strm)->zalloc))((strm)->opaque, (items), (size))
-#define ZFREE(strm, addr)  (*((strm)->zfree))((strm)->opaque, (voidpf)(addr))
+#define ZFREE(strm, addr)  (*((strm)->zfree))((strm)->opaque, (void*)(addr))
 #define TRY_FREE(s, p) {if (p) ZFREE(s, p);}
 
 /* Reverse the bytes in a 32-bit value */

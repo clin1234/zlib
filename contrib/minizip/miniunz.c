@@ -82,7 +82,7 @@
     tmu_date : the SAME new date at the tm_unz format */
 void change_file_date(filename,dosdate,tmu_date)
     const char *filename;
-    uLong dosdate;
+    unsigned long dosdate;
     tm_unz tmu_date;
 {
 #ifdef _WIN32
@@ -234,7 +234,7 @@ void Display64BitsSize(ZPOS64_T n, int size_char)
 int do_list(uf)
     unzFile uf;
 {
-    uLong i;
+    unsigned long i;
     unz_global_info64 gi;
     int err;
 
@@ -247,7 +247,7 @@ int do_list(uf)
     {
         char filename_inzip[256];
         unz_file_info64 file_info;
-        uLong ratio=0;
+        unsigned long ratio=0;
         const char *string_method;
         char charCrypt=' ';
         err = unzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
@@ -257,7 +257,7 @@ int do_list(uf)
             break;
         }
         if (file_info.uncompressed_size>0)
-            ratio = (uLong)((file_info.compressed_size*100)/file_info.uncompressed_size);
+            ratio = (unsigned long)((file_info.compressed_size*100)/file_info.uncompressed_size);
 
         /* display a '*' if the file is crypted */
         if ((file_info.flag & 1) != 0)
@@ -268,7 +268,7 @@ int do_list(uf)
         else
         if (file_info.compression_method==Z_DEFLATED)
         {
-            uInt iLevel=(uInt)((file_info.flag & 0x6)/2);
+            unsigned iLevel=(unsigned)((file_info.flag & 0x6)/2);
             if (iLevel==0)
               string_method="Defl:N";
             else if (iLevel==1)
@@ -289,11 +289,11 @@ int do_list(uf)
         Display64BitsSize(file_info.compressed_size,7);
         printf(" %3lu%%  %2.2lu-%2.2lu-%2.2lu  %2.2lu:%2.2lu  %8.8lx   %s\n",
                 ratio,
-                (uLong)file_info.tmu_date.tm_mon + 1,
-                (uLong)file_info.tmu_date.tm_mday,
-                (uLong)file_info.tmu_date.tm_year % 100,
-                (uLong)file_info.tmu_date.tm_hour,(uLong)file_info.tmu_date.tm_min,
-                (uLong)file_info.crc,filename_inzip);
+                (unsigned long)file_info.tmu_date.tm_mon + 1,
+                (unsigned long)file_info.tmu_date.tm_mday,
+                (unsigned long)file_info.tmu_date.tm_year % 100,
+                (unsigned long)file_info.tmu_date.tm_hour,(unsigned long)file_info.tmu_date.tm_min,
+                (unsigned long)file_info.crc,filename_inzip);
         if ((i+1)<gi.number_entry)
         {
             err = unzGoToNextFile(uf);
@@ -321,10 +321,10 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
     int err=UNZ_OK;
     FILE *fout=NULL;
     void* buf;
-    uInt size_buf;
+    unsigned size_buf;
 
     unz_file_info64 file_info;
-    uLong ratio=0;
+    unsigned long ratio=0;
     err = unzGetCurrentFileInfo64(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
 
     if (err!=UNZ_OK)
@@ -478,7 +478,7 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     int opt_overwrite;
     const char* password;
 {
-    uLong i;
+    unsigned long i;
     unz_global_info64 gi;
     int err;
     FILE* fout=NULL;
