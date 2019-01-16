@@ -19,12 +19,8 @@
    memory, Z_BUF_ERROR if there was not enough room in the output buffer,
    Z_STREAM_ERROR if the level parameter is invalid.
 */
-int compress2 (
-    unsigned char *dest,
-    unsigned long *destLen,
-    const unsigned char *source,
-    unsigned long sourceLen,
-    int level)
+int compress2(unsigned char *dest, unsigned long *destLen, 
+const unsigned char *source, unsigned long sourceLen, int level)
 {
     z_stream stream;
     int err;
@@ -67,7 +63,7 @@ int compress2 (
 
 /* ===========================================================================
  */
-int compress (unsigned long* dest, unsigned long* destLen, \
+int compress (unsigned char* dest, unsigned long* destLen, \
 const unsigned char* source, unsigned long sourceLen)
 {
     return compress2(dest, destLen, source, sourceLen, Z_DEFAULT_COMPRESSION);
