@@ -1415,20 +1415,20 @@ extern int   gzread(gzFile file, void* buf, unsigned len);
    Z_STREAM_ERROR.
 */
 
-extern z_size_t   gzfread(void* buf, z_size_t size, z_size_t nitems,
+extern size_t   gzfread(void* buf, size_t size, size_t nitems,
                                      gzFile file);
 /*
      Read up to nitems items of size size from file to buf, otherwise operating
    as gzread() does.  This duplicates the interface of stdio's fread(), with
    size_t request and return types.  If the library defines size_t, then
-   z_size_t is identical to size_t.  If not, then z_size_t is an unsigned
+   size_t is identical to size_t.  If not, then size_t is an unsigned
    integer type that can contain a pointer.
 
      gzfread() returns the number of full items read of size size, or zero if
    the end of the file was reached and a full item could not be read, or if
    there was an error.  gzerror() must be consulted if zero is returned in
    order to determine if there was an error.  If the multiplication of size and
-   nitems overflows, i.e. the product does not fit in a z_size_t, then nothing
+   nitems overflows, i.e. the product does not fit in a size_t, then nothing
    is read, zero is returned, and the error state is set to Z_STREAM_ERROR.
 
      In the event that the end of file is reached and only a partial item is
@@ -1449,17 +1449,17 @@ extern int   gzwrite(gzFile file,
    error.
 */
 
-extern z_size_t gzfwrite (const void* buf, z_size_t size,
-                                      z_size_t nitems, gzFile file);
+extern size_t gzfwrite (const void* buf, size_t size,
+                                      size_t nitems, gzFile file);
 /*
      gzfwrite() writes nitems items of size size from buf to file, duplicating
    the interface of stdio's fwrite(), with size_t request and return types.  If
-   the library defines size_t, then z_size_t is identical to size_t.  If not,
-   then z_size_t is an unsigned integer type that can contain a pointer.
+   the library defines size_t, then size_t is identical to size_t.  If not,
+   then size_t is an unsigned integer type that can contain a pointer.
 
      gzfwrite() returns the number of full items written of size size, or zero
    if there was an error.  If the multiplication of size and nitems overflows,
-   i.e. the product does not fit in a z_size_t, then nothing is written, zero
+   i.e. the product does not fit in a size_t, then nothing is written, zero
    is returned, and the error state is set to Z_STREAM_ERROR.
 */
 
@@ -1704,7 +1704,7 @@ extern unsigned long adler32(unsigned long adler,
 */
 
 extern unsigned long   adler32_z(unsigned long adler, const unsigned char *buf,
-                                    z_size_t len);
+                                    size_t len);
 /*
      Same as adler32(), but with a size_t length.
 */
@@ -1740,7 +1740,7 @@ extern unsigned long   crc32  (unsigned long crc,
 */
 
 extern unsigned long crc32_z (unsigned long crc, const unsigned char *buf,
-                                  z_size_t len);
+                                  size_t len);
 /*
      Same as crc32(), but with a size_t length.
 */

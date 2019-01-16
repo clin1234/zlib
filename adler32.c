@@ -8,11 +8,10 @@
 
 #include "zutil.h"
 
-local unsigned long adler32_combine_
-(unsigned long adler1, unsigned long adler2, z_off64_t len2);
+local unsigned long adler32_combine_(unsigned long adler1, unsigned long adler2, z_off64_t len2);
 
-const unsigned BASE 65521; /* largest prime smaller than 65536 */
-const unsigned NMAX 5552;
+const unsigned BASE = 65521; /* largest prime smaller than 65536 */
+const unsigned NMAX = 5552;
 /* NMAX is the largest n such that 255n(n+1)/2 + (n+1)(BASE-1) <= 2^32-1 */
 
 #define DO1(buf,i)  {adler += (buf)[i]; sum2 += adler;}
@@ -64,13 +63,12 @@ void MOD63(unsigned long a)
     } while (0);
 }
 #else
-void MOD(unsigned long a) a %= BASE;
-void MOD28(unsigned long a) a %= BASE;
-void MOD63(unsigned long a) a %= BASE;
+void MOD(unsigned long a) {a %= BASE;}
+void MOD28(unsigned long a) {a %= BASE;}
+void MOD63(unsigned long a) {a %= BASE;}
 #endif
 
 /* ========================================================================= */
-<<<<<<< Updated upstream
 unsigned long adler32_z(
     unsigned long adler,
     const unsigned char* buf,
@@ -142,7 +140,6 @@ unsigned long adler32_z(
 }
 
 /* ========================================================================= */
-<<<<<<< Updated upstream
 unsigned long adler32(
     unsigned long adler,
     const unsigned char *buf,
@@ -152,7 +149,6 @@ unsigned long adler32(
 }
 
 /* ========================================================================= */
-<<<<<<< Updated upstream
 local unsigned long adler32_combine_(
     unsigned long adler1,
     unsigned long adler2,
@@ -182,7 +178,6 @@ local unsigned long adler32_combine_(
 }
 
 /* ========================================================================= */
-<<<<<<< Updated upstream
 unsigned long adler32_combine(
     unsigned long adler1,
     unsigned long adler2,
@@ -191,7 +186,6 @@ unsigned long adler32_combine(
     return adler32_combine_(adler1, adler2, len2);
 }
 
-<<<<<<< Updated upstream
 unsigned long adler32_combine64(
     unsigned long adler1,
     unsigned long adler2,
