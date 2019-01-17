@@ -73,31 +73,31 @@ typedef enum {
 typedef block_state (*compress_func) (deflate_state *s, int flush);
 /* Compression function. Returns the block state after the call. */
 
-local int deflateStateCheck      (z_stream* strm));
-local void slide_hash     (deflate_state *s));
-local void fill_window    (deflate_state *s));
-local block_state deflate_stored (deflate_state *s, int flush));
-local block_state deflate_fast   (deflate_state *s, int flush));
+local int deflateStateCheck      (z_stream* strm);
+local void slide_hash     (deflate_state *s);
+local void fill_window    (deflate_state *s);
+local block_state deflate_stored (deflate_state *s, int flush);
+local block_state deflate_fast   (deflate_state *s, int flush);
 #ifndef FASTEST
-local block_state deflate_slow   (deflate_state *s, int flush));
+local block_state deflate_slow   (deflate_state *s, int flush);
 #endif
-local block_state deflate_rle    (deflate_state *s, int flush));
-local block_state deflate_huff   (deflate_state *s, int flush));
-local void lm_init        (deflate_state *s));
-local void putShortMSB    (deflate_state *s, unsigned b));
-local void flush_pending  (z_stream* strm));
-local unsigned read_buf   (z_stream* strm, unsigned char *buf, unsigned size));
+local block_state deflate_rle    (deflate_state *s, int flush);
+local block_state deflate_huff   (deflate_state *s, int flush);
+local void lm_init        (deflate_state *s);
+local void putShortMSB    (deflate_state *s, unsigned b);
+local void flush_pending  (z_stream* strm);
+local unsigned read_buf   (z_stream* strm, unsigned char *buf, unsigned size);
 #ifdef ASMV
 #  pragma message("Assembler code may have bugs -- use at your own risk")
       void match_init (void)); /* asm code initialization */
-      unsigned longest_match  (deflate_state *s, IPos cur_match));
+      unsigned longest_match  (deflate_state *s, IPos cur_match);
 #else
-local unsigned longest_match  (deflate_state *s, IPos cur_match));
+local unsigned longest_match  (deflate_state *s, IPos cur_match);
 #endif
 
 #ifdef ZLIB_DEBUG
 local  void check_match (deflate_state *s, IPos start, IPos match,
-                            int length));
+                            int length);
 #endif
 
 /* ===========================================================================

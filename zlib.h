@@ -1763,7 +1763,7 @@ extern unsigned long crc32_combine_gen (z_off_t len2);
 */
 
 extern unsigned long crc32_combine_op (unsigned long crc1, unsigned long crc2,
-                                           const z_crc_t *op);
+unsigned long op);
 /*
      Give the same result as crc32_combine(), using op in place of len2. op is
    is generated from len2 by crc32_combine_gen(). This will be faster than
@@ -1806,15 +1806,15 @@ extern int   inflateBackInit_(z_stream* strm, int windowBits,
                            ZLIB_VERSION, (int)sizeof(z_stream)
 #else
 #  define deflateInit(strm, level) \
-          deflateInit_((strm), (level), ZLIB_VERSION, (int)sizeof(z_stream)
+          deflateInit_((strm), (level), ZLIB_VERSION, (int)sizeof(z_stream))
 #  define inflateInit(strm) \
-          inflateInit_((strm), ZLIB_VERSION, (int)sizeof(z_stream)
+          inflateInit_((strm), ZLIB_VERSION, (int)sizeof(z_stream))
 #  define deflateInit2(strm, level, method, windowBits, memLevel, strategy) \
           deflateInit2_((strm),(level),(method),(windowBits),(memLevel),\
-                        (strategy), ZLIB_VERSION, (int)sizeof(z_stream)
+                        (strategy), ZLIB_VERSION, (int)sizeof(z_stream))
 #  define inflateInit2(strm, windowBits) \
           inflateInit2_((strm), (windowBits), ZLIB_VERSION, \
-                        (int)sizeof(z_stream)
+                        (int)sizeof(z_stream))
 #  define inflateBackInit(strm, windowBits, window) \
           inflateBackInit_((strm), (windowBits), (window), \
                            ZLIB_VERSION, (int)sizeof(z_stream)
@@ -1861,15 +1861,6 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
 #endif
 
 #if !defined(ZLIB_INTERNAL) && defined(Z_WANT64)
-#  ifdef Z_PREFIX_SET
-#    define z_gzopen z_gzopen64
-#    define z_gzseek z_gzseek64
-#    define z_gztell z_gztell64
-#    define z_gzoffset z_gzoffset64
-#    define z_adler32_combine z_adler32_combine64
-#    define z_crc32_combine z_crc32_combine64
-#    define z_crc32_combine_gen z_crc32_combine64_gen
-#  else
 #    define gzopen gzopen64
 #    define gzseek gzseek64
 #    define gztell gztell64
@@ -1877,7 +1868,6 @@ extern int   gzgetc_(gzFile file);  /* backward compatibility */
 #    define adler32_combine adler32_combine64
 #    define crc32_combine crc32_combine64
 #    define crc32_combine_gen crc32_combine_gen64
-#  endif
 #  ifndef Z_LARGE64
      extern gzFile   gzopen64 (const char *, const char *);
      extern z_off_t   gzseek64 (gzFile, z_off_t, int);
