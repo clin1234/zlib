@@ -96,7 +96,7 @@ typedef struct z_stream_s {
 
     alloc_func zalloc;  /* used to allocate the internal state */
     free_func  zfree;   /* used to free the internal state */
-    const void* opaque;  /* private data object passed to zalloc and zfree */
+    void* opaque;  /* private data object passed to zalloc and zfree */
 
     int data_type;  /* best guess about the data type: binary or text
                            for deflate, or the decoding state for inflate */
@@ -1441,8 +1441,7 @@ extern size_t   gzfread(void* buf, size_t size, size_t nitems,
    file, reseting and retrying on end-of-file, when size is not 1.
 */
 
-extern int   gzwrite(gzFile file,
-                                const void* buf, unsigned len);
+extern int gzwrite(gzFile file, const void* buf, unsigned len);
 /*
      Writes the given number of uncompressed bytes into the compressed file.
    gzwrite returns the number of uncompressed bytes written or 0 in case of

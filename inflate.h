@@ -80,7 +80,7 @@ typedef enum {
 /* State maintained between inflate() calls -- approximately 7K bytes, not
    including the allocated sliding window, which is up to 32K bytes. */
 struct inflate_state {
-    z_streamp strm;             /* pointer back to this zlib stream */
+    z_stream* strm;             /* pointer back to this zlib stream */
     inflate_mode mode;          /* current inflate mode */
     int last;                   /* true if processing last block */
     int wrap;                   /* bit 0 true for zlib, bit 1 true for gzip,
@@ -91,13 +91,13 @@ struct inflate_state {
     unsigned dmax;              /* zlib header max distance (INFLATE_STRICT) */
     unsigned long check;        /* protected copy of check value */
     unsigned long total;        /* protected copy of output count */
-    gz_headerp head;            /* where to save gzip header information */
+    gz_header* head;            /* where to save gzip header information */
         /* sliding window */
     unsigned wbits;             /* log base 2 of requested window size */
     unsigned wsize;             /* window size or zero if not using window */
     unsigned whave;             /* valid bytes in the window */
     unsigned wnext;             /* window write index */
-    unsigned char FAR *window;  /* allocated sliding window, if needed */
+    unsigned char* window;  /* allocated sliding window, if needed */
         /* bit accumulator */
     unsigned long hold;         /* input bit accumulator */
     unsigned bits;              /* number of bits in "in" */
@@ -107,8 +107,8 @@ struct inflate_state {
         /* for table and code decoding */
     unsigned extra;             /* extra bits needed */
         /* fixed and dynamic code tables */
-    code const FAR *lencode;    /* starting table for length/literal codes */
-    code const FAR *distcode;   /* starting table for distance codes */
+    code const* lencode;    /* starting table for length/literal codes */
+    code const* distcode;   /* starting table for distance codes */
     unsigned lenbits;           /* index bits for lencode */
     unsigned distbits;          /* index bits for distcode */
         /* dynamic table building */
@@ -116,7 +116,7 @@ struct inflate_state {
     unsigned nlen;              /* number of length code lengths */
     unsigned ndist;             /* number of distance code lengths */
     unsigned have;              /* number of code lengths in lens[] */
-    code FAR *next;             /* next available space in codes[] */
+    code* next;             /* next available space in codes[] */
     unsigned short lens[320];   /* temporary storage for code lengths */
     unsigned short work[288];   /* work area for code table building */
     code codes[ENOUGH];         /* space for code tables */

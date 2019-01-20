@@ -265,7 +265,7 @@ int deflateInit2_(
 #ifdef Z_SOLO
         return Z_STREAM_ERROR;
 #else
-        strm->zalloc = calloc;
+        strm->zalloc = zcalloc;
         strm->opaque = (void*)0;
 #endif
     }
@@ -496,7 +496,7 @@ int deflateGetDictionary (
     if (len > s->w_size)
         len = s->w_size;
     if (dictionary != NULL && len)
-        zmemcpy(dictionary, s->window + s->strstart + s->lookahead - len, len);
+        memcpy(dictionary, s->window + s->strstart + s->lookahead - len, len);
     if (dictLength != NULL)
         *dictLength = len;
     return Z_OK;
@@ -778,7 +778,7 @@ local void flush_pending(
     if (len > strm->avail_out) len = strm->avail_out;
     if (len == 0) return;
 
-    zmemcpy(strm->next_out, s->pending_out, len);
+    memcpy(strm->next_out, s->pending_out, len);
     strm->next_out  += len;
     s->pending_out  += len;
     strm->total_out += len;
@@ -945,7 +945,7 @@ int deflate (
             unsigned left = (s->gzhead->extra_len & 0xffff) - s->gzindex;
             while (s->pending + left > s->pending_buf_size) {
                 unsigned copy = s->pending_buf_size - s->pending;
-                zmemcpy(s->pending_buf + s->pending,
+                memcpy(s->pending_buf + s->pending,
                         s->gzhead->extra + s->gzindex, copy);
                 s->pending = s->pending_buf_size;
                 HCRC_UPDATE(beg);
@@ -958,7 +958,7 @@ int deflate (
                 beg = 0;
                 left -= copy;
             }
-            zmemcpy(s->pending_buf + s->pending,
+            memcpy(s->pending_buf + s->pending,
                     s->gzhead->extra + s->gzindex, left);
             s->pending += left;
             HCRC_UPDATE(beg);
@@ -1158,12 +1158,12 @@ int deflateCopy (
 
     ss = source->state;
 
-    zmemcpy((void*)dest, (void*)source, sizeof(z_stream));
+    memcpy((void*)dest, (void*)source, sizeof(z_stream));
 
     ds = (deflate_state *) ZALLOC(dest, 1, sizeof(deflate_state));
     if (ds == NULL) return Z_MEM_ERROR;
     dest->state = (struct internal_state *) ds;
-    zmemcpy((void*)ds, (void*)ss, sizeof(deflate_state));
+    memcpy((void*)ds, (void*)ss, sizeof(deflate_state));
     ds->strm = dest;
 
     ds->window = (unsigned char *) ZALLOC(dest, ds->w_size, 2*sizeof(unsigned char));
@@ -1177,10 +1177,10 @@ int deflateCopy (
         return Z_MEM_ERROR;
     }
     /* following zmemcpy do not work for 16-bit MSDOS */
-    zmemcpy(ds->window, ss->window, ds->w_size * 2 * sizeof(unsigned char));
-    zmemcpy((void*)ds->prev, (void*)ss->prev, ds->w_size * sizeof(Pos));
-    zmemcpy((void*)ds->head, (void*)ss->head, ds->hash_size * sizeof(Pos));
-    zmemcpy(ds->pending_buf, ss->pending_buf, (unsigned)ds->pending_buf_size);
+    memcpy(ds->window, ss->window, ds->w_size * 2 * sizeof(unsigned char));
+    memcpy((void*)ds->prev, (void*)ss->prev, ds->w_size * sizeof(Pos));
+    memcpy((void*)ds->head, (void*)ss->head, ds->hash_size * sizeof(Pos));
+    memcpy(ds->pending_buf, ss->pending_buf, (unsigned)ds->pending_buf_size);
 
     ds->pending_out = ds->pending_buf + (ss->pending_out - ss->pending_buf);
     ds->sym_buf = ds->pending_buf + ds->lit_bufsize;
@@ -1212,7 +1212,7 @@ local unsigned read_buf(
 
     strm->avail_in  -= len;
 
-    zmemcpy(buf, strm->next_in, len);
+    memcpy(buf, strm->next_in, len);
     if (strm->state->wrap == 1) {
         strm->adler = adler32(strm->adler, buf, len);
     }
@@ -1491,7 +1491,7 @@ local void check_match(
     int length)
 {
     /* check that the match is indeed a match */
-    if (zmemcmp(s->window + match,
+    if (memcmp(s->window + match,
                 s->window + start, length) != EQUAL) {
         fprintf(stderr, " start %u, match %u, length %d\n",
                 start, match, length);
@@ -1549,7 +1549,7 @@ local void fill_window(
          */
         if (s->strstart >= wsize+MAX_DIST(s)) {
 
-            zmemcpy(s->window, s->window+wsize, (unsigned)wsize - more);
+            memcpy(s->window, s->window+wsize, (unsigned)wsize - more);
             s->match_start -= wsize;
             s->strstart    -= wsize; /* we now have strstart >= MAX_DIST */
             s->block_start -= (long) wsize;
@@ -1750,7 +1750,7 @@ local block_state deflate_stored(
         if (left) {
             if (left > len)
                 left = len;
-            zmemcpy(s->strm->next_out, s->window + s->block_start, left);
+            memcpy(s->strm->next_out, s->window + s->block_start, left);
             s->strm->next_out += left;
             s->strm->avail_out -= left;
             s->strm->total_out += left;
@@ -1782,7 +1782,7 @@ local block_state deflate_stored(
          */
         if (used >= s->w_size) {    /* supplant the previous history */
             s->matches = 2;         /* clear hash */
-            zmemcpy(s->window, s->strm->next_in - s->w_size, s->w_size);
+            memcpy(s->window, s->strm->next_in - s->w_size, s->w_size);
             s->strstart = s->w_size;
             s->insert = s->strstart;
         }
@@ -1790,13 +1790,13 @@ local block_state deflate_stored(
             if (s->window_size - s->strstart <= used) {
                 /* Slide the window down. */
                 s->strstart -= s->w_size;
-                zmemcpy(s->window, s->window + s->w_size, s->strstart);
+                memcpy(s->window, s->window + s->w_size, s->strstart);
                 if (s->matches < 2)
                     s->matches++;   /* add a pending slide_hash() */
                 if (s->insert > s->strstart)
                     s->insert = s->strstart;
             }
-            zmemcpy(s->window + s->strstart, s->strm->next_in - used, used);
+            memcpy(s->window + s->strstart, s->strm->next_in - used, used);
             s->strstart += used;
             s->insert += MIN(used, s->w_size - s->insert);
         }
@@ -1820,7 +1820,7 @@ local block_state deflate_stored(
         /* Slide the window down. */
         s->block_start -= s->w_size;
         s->strstart -= s->w_size;
-        zmemcpy(s->window, s->window + s->w_size, s->strstart);
+        memcpy(s->window, s->window + s->w_size, s->strstart);
         if (s->matches < 2)
             s->matches++;           /* add a pending slide_hash() */
         have += s->w_size;          /* more space now */

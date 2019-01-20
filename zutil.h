@@ -81,6 +81,10 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #  define OS_CODE  3     /* assume Unix */
 #endif
 
+void* zmemzero(void* dest, size_t len) {
+        memset(dest, 0, len);
+}
+
 /* Diagnostic functions */
 #ifdef ZLIB_DEBUG
 #  include <stdio.h>
@@ -101,8 +105,13 @@ extern const char * const z_errmsg[10]; /* indexed by 2-zlib_error */
 #  define Tracecv(c,x)
 #endif
 
-#define ZALLOC(strm, items, size) \
-           (*((strm)->zalloc))((strm)->opaque, (items), (size))
+void* zcalloc (void* opaque, unsigned items,
+                                    unsigned size);
+void zcfree(void* opaque, void* ptr);
+
+void* ZALLOC(z_stream* strm, unsigned items, unsigned size){
+           (*strm->zalloc)(strm->opaque, items, size);
+}
 #define ZFREE(strm, addr)  (*((strm)->zfree))((strm)->opaque, (void*)(addr))
 #define TRY_FREE(s, p) {if (p) ZFREE(s, p);}
 

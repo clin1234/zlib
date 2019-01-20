@@ -12,7 +12,7 @@
 #endif
 
 /* Local functions */
-local void gz_reset (gz_statep);
+local void gz_reset (gz_state*);
 local gzFile gz_open (const void *, int, const char *);
 
 /* Reset gzip file state */
@@ -38,7 +38,7 @@ local gzFile gz_open(
     const char *mode)
 {
     gz_state* state;
-    z_size_t len;
+    size_t len;
     int oflag;
 #ifdef O_CLOEXEC
     int cloexec = 0;
@@ -288,7 +288,7 @@ int gzrewind(
     /* get internal structure */
     if (file == NULL)
         return -1;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
 
     /* check that we're reading and that there's no error */
     if (state->mode != GZ_READ ||
@@ -315,7 +315,7 @@ z_off64_t gzseek64(
     /* get internal structure and check integrity */
     if (file == NULL)
         return -1;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return -1;
 
@@ -395,12 +395,12 @@ z_off_t gzseek(file, offset, whence)
 z_off64_t gztell64(file)
     gzFile file;
 {
-    gz_statep state;
+    gz_state* state;
 
     /* get internal structure and check integrity */
     if (file == NULL)
         return -1;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return -1;
 
@@ -423,12 +423,12 @@ z_off64_t gzoffset64(file)
     gzFile file;
 {
     z_off64_t offset;
-    gz_statep state;
+    gz_state* state;
 
     /* get internal structure and check integrity */
     if (file == NULL)
         return -1;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return -1;
 
@@ -455,12 +455,12 @@ z_off_t gzoffset(file)
 int gzeof(file)
     gzFile file;
 {
-    gz_statep state;
+    gz_state* state;
 
     /* get internal structure and check integrity */
     if (file == NULL)
         return 0;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return 0;
 
@@ -473,12 +473,12 @@ const char * gzerror(file, errnum)
     gzFile file;
     int *errnum;
 {
-    gz_statep state;
+    gz_state* state;
 
     /* get internal structure and check integrity */
     if (file == NULL)
         return NULL;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return NULL;
 
@@ -493,12 +493,12 @@ const char * gzerror(file, errnum)
 void gzclearerr(file)
     gzFile file;
 {
-    gz_statep state;
+    gz_state* state;
 
     /* get internal structure and check integrity */
     if (file == NULL)
         return;
-    state = (gz_statep)file;
+    state = (gz_state*)file;
     if (state->mode != GZ_READ && state->mode != GZ_WRITE)
         return;
 
@@ -516,8 +516,8 @@ void gzclearerr(file)
    memory).  Simply save the error message as a static string.  If there is an
    allocation failure constructing the error message, then convert the error to
    out of memory. */
-void ZLIB_INTERNAL gz_error(state, err, msg)
-    gz_statep state;
+void gz_error(state, err, msg)
+    gz_state* state;
     int err;
     const char *msg;
 {

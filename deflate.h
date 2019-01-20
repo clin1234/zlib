@@ -178,8 +178,10 @@ typedef struct internal_state {
      * smaller than this value. This mechanism is used only for compression
      * levels >= 4.
      */
-
-    unsigned max_insert_length = max_lazy_match;
+/* XXX: investigate why defining max_insert_length as a macro instead of a 
+variable silences "expected ':', ',', ';', '}' or '__attribute__' before '=' 
+token" */
+    #define max_insert_length max_lazy_match
     /* Insert new strings in the hash table only if the match length is not
      * greater than this length. This saves time but degrades compression.
      * max_insert_length is used only for compression levels <= 3.
@@ -297,8 +299,8 @@ void _tr_flush_block (deflate_state *s, char *buf,
                         unsigned long stored_len, int last);
 void _tr_flush_bits (deflate_state *s);
 void _tr_align (deflate_state *s);
-void _tr_stored_block (deflate_state *s, char *buf,
-                        unsigned long stored_len, int last);
+void _tr_stored_block (deflate_state *s, char *buf, unsigned long stored_len, 
+int last);
 
 #define d_code(dist) \
    ((dist) < 256 ? _dist_code[dist] : _dist_code[256+((dist)>>7)])

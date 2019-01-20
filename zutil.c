@@ -108,3 +108,16 @@ const char * zError(
 {
     return ERR_MSG(err);
 }
+
+void* zcalloc (void* opaque, unsigned items, unsigned size)
+{
+    (void)opaque;
+    return sizeof(unsigned) > 2 ? (void*)malloc(items * size) :
+                              (void*)calloc(items, size);
+}
+
+void zcfree(void* opaque, void* ptr)
+{
+    (void)opaque;
+    free(ptr);
+}
